@@ -4,7 +4,7 @@ import tkinter as tk
 from functools import partial
 
 import frames, controllers
-from utils import load_font, unload_font
+from utils import load_unload_font
 from form_wids import DialogBox
 
 
@@ -28,7 +28,7 @@ class ShelfApp(tk.Tk):
   def destroy(self):
     if self.font_dir:
       for font_ in os.listdir(self.font_dir):
-        unload_font(os.path.join(self.font_dir, font_))
+        load_unload_font(os.path.join(self.font_dir, font_), load=False)
 
     return super().destroy()
 
@@ -98,8 +98,22 @@ class ShelfApp(tk.Tk):
     self.resizable(False, False)
     self.configure(background='black')
 
+    self.init_icon()
     self.load_fonts()
     self.init_menu()
+
+  def init_icon(self):
+    icon_path = None
+
+    if 'Assets' in os.listdir(self.base_dir):
+      asset_dir = os.path.join(self.base_dir, 'Assets')
+
+      for file in os.listdir(asset_dir):
+        if file.endswith('.ico'):
+          icon_path = os.path.join(asset_dir, file)
+          break
+
+    self.iconbitmap(icon_path)
 
   def init_frames(self):
     frames.OptionsFrame(self)
@@ -110,14 +124,14 @@ class ShelfApp(tk.Tk):
 
   def load_fonts(self):
 
-    if 'Fonts' not in os.listdir():
+    if 'Fonts' not in os.listdir(self.base_dir):
       return
 
     self.font_dir = os.path.join(self.base_dir, 'Fonts')
 
     for font_ in os.listdir(self.font_dir):
       if font_.endswith('.ttf'):
-        load_font(os.path.join(self.font_dir, font_))
+        load_unload_font(os.path.join(self.font_dir, font_))
 
   def bind_keys(self):
 
