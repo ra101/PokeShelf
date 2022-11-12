@@ -1,4 +1,4 @@
-import os, json
+import os, json, sys
 
 import tkinter as tk
 from functools import partial
@@ -26,9 +26,12 @@ class ShelfApp(tk.Tk):
     return super().mainloop(n)
 
   def destroy(self):
-    if self.font_dir:
-      for font_ in os.listdir(self.font_dir):
-        load_unload_font(os.path.join(self.font_dir, font_), load=False)
+    if self.asset_dir:
+      for file in os.listdir(self.asset_dir):
+        if file.endswith('.tff'):
+          load_unload_font(
+            os.path.join(self.asset_dir, file), load=False
+          )
 
     return super().destroy()
 
@@ -37,8 +40,15 @@ class ShelfApp(tk.Tk):
     self.toggle_frame(frame_name)
 
   def init_vars(self):
-    self.base_dir = os.path.dirname(os.path.abspath(__file__))
-    self.font_dir, self.config_dir, self.dialog_box = None, None, None
+    self.base_dir, self.asset_dir, self.dialog_box = [None]*3
+
+    if getattr(sys, 'frozen', False):
+      self.base_dir = os.path.dirname(sys.executable)
+    elif __file__:
+      self.base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    if 'Assets' in os.listdir(self.base_dir):
+      self.asset_dir = os.path.join(self.base_dir, 'Assets')
 
     self.init_config()
 
@@ -103,17 +113,14 @@ class ShelfApp(tk.Tk):
     self.init_menu()
 
   def init_icon(self):
-    icon_path = None
+    if not self.asset_dir:
+      return
 
-    if 'Assets' in os.listdir(self.base_dir):
-      asset_dir = os.path.join(self.base_dir, 'Assets')
+    for file in os.listdir(self.asset_dir):
+      if file.endswith('.ico'):
+        self.iconbitmap(os.path.join(self.asset_dir, file))
+        return
 
-      for file in os.listdir(asset_dir):
-        if file.endswith('.ico'):
-          icon_path = os.path.join(asset_dir, file)
-          break
-
-    self.iconbitmap(icon_path)
 
   def init_frames(self):
     frames.OptionsFrame(self)
@@ -124,14 +131,12 @@ class ShelfApp(tk.Tk):
 
   def load_fonts(self):
 
-    if 'Fonts' not in os.listdir(self.base_dir):
+    if not self.asset_dir:
       return
 
-    self.font_dir = os.path.join(self.base_dir, 'Fonts')
-
-    for font_ in os.listdir(self.font_dir):
-      if font_.endswith('.ttf'):
-        load_unload_font(os.path.join(self.font_dir, font_))
+    for file in os.listdir(self.asset_dir):
+      if file.endswith('.ttf'):
+        load_unload_font(os.path.join(self.asset_dir, file))
 
   def bind_keys(self):
 
@@ -273,10 +278,3 @@ class ShelfApp(tk.Tk):
       self.toggle_frame('shelf')
     else:
       self.toggle_frame('splash')
-
-
-if __name__ == "__main__":
-
-  root = ShelfApp()
-
-  root.mainloop()
