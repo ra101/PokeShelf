@@ -138,12 +138,12 @@ class OptionsFrame:
 
   @staticmethod
   def inc_val(frame):
-    if frame.selected_op in [0, 1, (len(frame.op_frs) - 2)]:
+    if frame.selected_op in [0, 1, (len(frame.op_frs) - 4), (len(frame.op_frs) - 2)]:
       frame.op_frs[frame.selected_op][-1].inc_val()
 
   @staticmethod
   def dec_val(frame):
-    if frame.selected_op in [0, 1, (len(frame.op_frs) - 1)]:
+    if frame.selected_op in [0, 1, (len(frame.op_frs) - 4), (len(frame.op_frs) - 1)]:
       frame.op_frs[frame.selected_op][-1].dec_val()
 
 
@@ -206,7 +206,7 @@ class OptionsFrame:
     # <h1>
     res_wids.ResponsiveLabel(
       head_frame, fg="#333", bg="#ddd", root=self.root,
-      font=font.Font(family="Power Green",weight=font.BOLD, size=30),
+      font=font.Font(family="Power Green",weight=font.BOLD, size=25),
       text="Options..."
     ).grid(column=0, row=0, sticky=tk.W, padx=20, pady=3)
     # </h1>
@@ -227,25 +227,26 @@ class OptionsFrame:
     self.create_order_setting(form_frame)
     self.create_gb_setting(form_frame)
     self.create_ds_setting(form_frame)
+    self.create_tray_setting(form_frame)
     self.create_save_button(form_frame)
     self.create_cancel_button(form_frame)
 
   def create_music_setting(self, body_frame):
     form_wids.Slider(
       body_frame, heading="Music Volume", value=self.root.MV,
-      font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
+      font_=font.Font(family="Power Green",weight=font.BOLD, size=18)
     ).grid(row=0)
 
   def create_size_setting(self, body_frame):
     form_wids.RadioButton(
       body_frame, heading="Screen Size", value=self.root.SS, radiology=self.root.RES,
-      font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
+      font_=font.Font(family="Power Green",weight=font.BOLD, size=18)
     ).grid(row=1)
 
   def create_order_setting(self, body_frame):
     frame = form_wids.InputField(
       body_frame, heading="Game Order", value=self.root.GO,
-      font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
+      font_=font.Font(family="Power Green",weight=font.BOLD, size=18)
     )
     frame.grid(row=2)
     frame.input_frame.cmd = partial(
@@ -256,7 +257,7 @@ class OptionsFrame:
     heading, ft ="GB Emulator", [['GB Emulator', '.exe']]
     frame = form_wids.InputFieldV2(
       body_frame, value=self.root.GB, heading=heading, ft=ft,
-      font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
+      font_=font.Font(family="Power Green",weight=font.BOLD, size=18)
     )
     frame.grid(row=3)
     frame.input_frame.cmd = partial(
@@ -271,7 +272,7 @@ class OptionsFrame:
     heading, ft ="DS Emulator", [['DS Emulator', '.exe']]
     frame = form_wids.InputFieldV2(
       body_frame, value=self.root.DS, heading=heading, ft=ft,
-      font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
+      font_=font.Font(family="Power Green",weight=font.BOLD, size=18)
     )
     frame.grid(row=4)
     frame.input_frame.cmd = partial(
@@ -282,18 +283,24 @@ class OptionsFrame:
   def ds_cmd(root, frame, heading, ft):
     root.DS = frame.set_value(heading, ft)
 
+  def create_tray_setting(self, body_frame):
+    form_wids.RadioButtonV2(
+      body_frame, heading="System Tray", value=self.root.ST,
+      font_=font.Font(family="Power Green",weight=font.BOLD, size=18)
+    ).grid(row=5)
+
   def create_save_button(self, body_frame):
     button_frame = res_wids.ResponsiveFrame(
       body_frame, bg=body_frame['bg'], root=self.root,
       highlightbackground=form_wids.BaseFormWidget.OFF_COLOR,
       highlightcolor=form_wids.BaseFormWidget.OFF_COLOR, highlightthickness=3
     )
-    button_frame.grid(column=0, pady=2, columnspan=2,  row=5, sticky=tk.NS)
+    button_frame.grid(column=0, pady=2, columnspan=2,  row=6, sticky=tk.NS)
 
     button_label = res_wids.ResponsiveLabel(
       button_frame, root=self.root, bg=body_frame['bg'],
       text=" 💾 Save ", fg=form_wids.BaseFormWidget.FIX_COLOR,
-      font=font.Font(family="Power Green",weight=font.BOLD, size=20)
+      font=font.Font(family="Power Green",weight=font.BOLD, size=18)
     )
     button_label.grid(column=0, row=0, sticky=tk.NSEW)
 
@@ -313,12 +320,12 @@ class OptionsFrame:
       highlightbackground=form_wids.BaseFormWidget.OFF_COLOR,
       highlightcolor=form_wids.BaseFormWidget.OFF_COLOR, highlightthickness=3
     )
-    button_frame.grid(column=2, pady=2, row=5, sticky=tk.NS)
+    button_frame.grid(column=2, pady=2, row=6, sticky=tk.NS)
 
     button_label = res_wids.ResponsiveLabel(
       button_frame, root=self.root, bg=body_frame['bg'],
       text=" 🚫 Cancel ", fg=form_wids.BaseFormWidget.ON_COLOR,
-      font=font.Font(family="Power Green",weight=font.BOLD, size=20)
+      font=font.Font(family="Power Green",weight=font.BOLD, size=18)
     )
     button_label.grid(column=0, row=0, sticky=tk.NSEW)
 

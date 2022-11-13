@@ -166,7 +166,53 @@ class RadioButton(BaseFormWidget):
   def grid(self, row):
     super().grid(row)
     for i, radio in enumerate(self.input_frame.children.values()):
-      radio.grid(column=i, row=0, sticky=tk.NS)
+      radio.grid(column=i, row=0, sticky=tk.NS, pady=3)
+
+
+class RadioButtonV2(BaseFormWidget):
+
+  def __init__(self, master, heading, font_, value="M"):
+    super().__init__(master, heading, font_)
+
+    value = "ON" if master.root.ST else "OFF"
+    self.input_frame.value_olist = ["ON", "OFF"]
+
+    self.input_frame.grid_columnconfigure(0, weight=1)
+    self.input_frame.grid_columnconfigure(1, weight=1)
+
+    for key in self.input_frame.value_olist:
+      fg = self.FIX_COLOR if key == value else self.OFF_COLOR
+
+      radio = res_wids.ResponsiveLabel(
+        self.input_frame, fg=fg, bg=master['bg'],
+        root=master.root, font=font_, text=key
+      )
+      radio.value = bool(key == "ON")
+
+    children = list(self.input_frame.children.values())
+    self.input_frame.select = partial(self.on_off, children, master.root, True)
+    self.input_frame.unselect = partial(self.on_off, children, master.root, False)
+    self.input_frame.inc_val = partial(self.change_value, children, master.root)
+    self.input_frame.dec_val = partial(self.change_value, children, master.root)
+
+  @staticmethod
+  def on_off(children, root, selected=True):
+    on_color = RadioButton.ON_COLOR if selected else RadioButton.FIX_COLOR
+    children[root.ST].config({"fg":  RadioButton.OFF_COLOR})
+    children[~root.ST].config({"fg":  on_color })
+
+  @staticmethod
+  def change_value(children, root):
+    root.ST = ~root.ST
+    children[root.ST].config({"fg":  RadioButton.OFF_COLOR})
+    children[~root.ST].config({"fg":  RadioButton.ON_COLOR})
+
+
+  def grid(self, row):
+    super().grid(row)
+    for i, radio in enumerate(self.input_frame.children.values()):
+      radio.grid(column=i, row=0, sticky=tk.NS, pady=3)
+
 
 
 class InputField(BaseFormWidget):
@@ -179,7 +225,7 @@ class InputField(BaseFormWidget):
     self.input_frame.grid_columnconfigure(0, weight=1)
 
     self.textbox = res_wids.ResponsiveEntry(
-      self.input_frame, font=font_, root=master.root, width=18
+      self.input_frame, font=font_, root=master.root, width=22
     )
     self.textbox.set_value(value)
 
@@ -202,7 +248,7 @@ class InputFieldV2(InputField):
       highlightbackground=self.OFF_COLOR, highlightcolor=self.OFF_COLOR, highlightthickness=3
     )
     self.browse_label = res_wids.ResponsiveLabel(
-      self.browse_frame, font=font.Font(size=20), root=master.root,
+      self.browse_frame, font=font.Font(size=15), root=master.root,
       bg=master['bg'], text=" ... ", fg=self.ON_COLOR
     )
 
@@ -220,19 +266,20 @@ class InputFieldV2(InputField):
 
   def on_off(self, selected=True):
     text_color, border_color, bg_color = [
-      [InputFieldV2.FIX_COLOR, InputFieldV2.OFF_COLOR, self.browse_label.master['bg']],
+      [InputFieldV2.FIX_COLOR, InputFieldV2.OFF_COLOR, "#ddd"],
       [InputFieldV2.OFF_COLOR, InputFieldV2.ON_COLOR, InputFieldV2.BG_COLOR]
     ][selected]
 
 
     self.browse_label.config({"fg": text_color, "bg": bg_color})
     self.browse_label.master.config({
-      "highlightbackground": border_color, "highlightcolor": border_color
+      "bg": bg_color, "highlightcolor": border_color,
+      "highlightbackground": border_color
     })
 
   def grid(self, row):
     super().grid(row)
-    self.browse_label.grid(column=0, row=0, sticky=tk.NSEW)
+    self.browse_label.grid(column=0, row=0, sticky=tk.NSEW,ipadx=5)
     self.browse_frame.grid(column=1, row=0, sticky=tk.NS)
 
 

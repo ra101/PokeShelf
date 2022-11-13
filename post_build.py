@@ -12,7 +12,7 @@ req_assets = ['pkmnem.ttf', 'PokeShelf.ico']
 with open(os.path.join(dist_dir, 'config.json'), "w") as f:
     json.dump({
         "screenSize": "M", "musicVolume": 100, "gameOrder": [],
-        "GBEmulator": "", "DSEmulator": "", "gameList": [], "systemTray": False
+        "GBEmulator": "", "DSEmulator": "", "systemTray": False, "gameList": []
     }, f, indent=4)
 
 os.mkdir(dist_adir)

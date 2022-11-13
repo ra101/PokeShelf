@@ -84,8 +84,8 @@ class ShelfApp(tk.Tk):
       config_data['gameOrder'] = self.GO = []
       config_data['GBEmulator'] = self.GB = ""
       config_data['DSEmulator'] = self.DS = ""
-      config_data['gameList'], self.GD = [], {}
       config_data['systemTray'] = self.ST = False
+      config_data['gameList'], self.GD = [], {}
 
       with open(self.config_file, "w") as f:
         json.dump(config_data, f, indent=4)
@@ -100,8 +100,8 @@ class ShelfApp(tk.Tk):
         self.GO = config_data.get("gameOrder", [])
         self.GB = config_data.get("GBEmulator", "")
         self.DS = config_data.get("DSEmulator", "")
+        self.ST = bool(config_data.get("systemTray", False))
         self.GD = { i['oid']: i for i in config_data.get("gameList", []) }
-        self.ST = config_data.get("systemTray", False)
 
   def save_config(self):
     self.config_file = os.path.join(self.base_dir, 'config.json')
@@ -113,8 +113,8 @@ class ShelfApp(tk.Tk):
         "gameOrder": getattr(self, "GO", []),
         "GBEmulator": getattr(self, "GB", ""),
         "DSEmulator": getattr(self, "DS", ""),
+        "systemTray": bool(getattr(self, "ST", False)),
         "gameList": list(getattr(self, "GD", {}).values()),
-        "systemTray": getattr(self, "ST", False),
       }, f, indent=4)
 
   def init_screen(self):
