@@ -28,7 +28,7 @@ class ShelfApp(tk.Tk):
   def destroy(self):
     if self.asset_dir:
       for file in os.listdir(self.asset_dir):
-        if file.endswith('.tff'):
+        if file.endswith('.ttf'):
           load_unload_font(
             os.path.join(self.asset_dir, file), load=False
           )
@@ -51,6 +51,7 @@ class ShelfApp(tk.Tk):
       self.asset_dir = os.path.join(self.base_dir, 'Assets')
 
     self.init_config()
+    self.load_fonts()
 
     self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT = 512, 384
     self.RES = dict(S=0.5, M=1, L=1.5, XL=2, FS=2.5)
@@ -109,7 +110,6 @@ class ShelfApp(tk.Tk):
     self.configure(background='black')
 
     self.init_icon()
-    self.load_fonts()
     self.init_menu()
 
   def init_icon(self):
