@@ -45,27 +45,12 @@ class ShelfApp(tk.Tk):
 
     return super().destroy()
 
-  def start_tray(self):
-    self.withdraw()
-    self.init_tray()
-    self.system_tray.run()
-    self.system_tray = None
+  def lift(self):
+    super().lift()
 
-  def stop_tray(self, tray=None, cmd=None, fr=None):
-    self.system_tray.stop()
-    self.system_tray = None
-
-    if fr:
-      self.after(0, lambda: self._win_from_tray(fr))
-
-  def _win_from_tray(self, fr):
-    self.deiconify()
-    self.lift()
-    self.toggle_frame(fr)
-
-  def setup_screen(self, frame_name="splash"):
-    self.set_resolution(self.SS)
-    self.toggle_frame(frame_name)
+    self.attributes('-topmost', 1)
+    self.focus_force()
+    self.after_idle(self.attributes,'-topmost',False)
 
   def init_vars(self):
     self.base_dir, self.asset_dir, self.icon_path = None, None, None
@@ -150,48 +135,12 @@ class ShelfApp(tk.Tk):
         self.iconbitmap(self.icon_path)
         return
 
-  def init_tray(self):
-    self.system_tray = Tray(
-      name="PokéShelf : Tray", title="PokéShelf",
-      icon=Image.open(self.icon_path),
-      menu=(
-        TrayCmd('PokéShelf', partial(self.stop_tray, fr="splash")),
-        TrayCmd('Options', partial(self.stop_tray, fr="options")),
-        TrayCmd('About', partial(self.stop_tray, fr="about")),
-        TrayCmd('Quit', self.destroy))
-    )
-
-
   def init_frames(self):
     frames.OptionsFrame(self)
     frames.AboutFrame(self)
     frames.GameSettingsFrame(self)
     frames.ShelfFrame(self)
     frames.SplashFrame(self)
-
-  def load_fonts(self):
-
-    if not self.asset_dir:
-      return
-
-    for file in os.listdir(self.asset_dir):
-      if file.endswith('.ttf'):
-        load_unload_font(os.path.join(self.asset_dir, file))
-
-  def bind_keys(self):
-
-    for i in ['Escape', 'X', 'x']:
-      self.bind(f"<{i}>", self.controller.escape)
-
-    controls = {
-      "prv_op": ["Up", "Shift-Tab"], "nxt_op": ["Down", "Tab"],
-      "dec_val": ["Left"], "inc_val": ["Right"],
-      "run_op": ['Return', 'C', 'c', 'Z', 'z', 'space']
-    }
-
-    for func, keys in controls.items():
-      for key in keys:
-        self.bind(f"<{key}>", partial(self.controller.run_func, func_name=func))
 
   def init_menu(self):
     menu_bar = tk.Menu(self, name="menu")
@@ -235,6 +184,17 @@ class ShelfApp(tk.Tk):
 
     self.config(menu=menu_bar)
 
+  def init_tray(self):
+    self.system_tray = Tray(
+      name="PokéShelf : Tray", title="PokéShelf",
+      icon=Image.open(self.icon_path),
+      menu=(
+        TrayCmd('PokéShelf', partial(self.stop_tray, fr="splash")),
+        TrayCmd('Options', partial(self.stop_tray, fr="options")),
+        TrayCmd('About', partial(self.stop_tray, fr="about")),
+        TrayCmd('Quit', self.destroy))
+    )
+
   def set_resolution(self, SS):
     width = int(self.DEFAULT_WIDTH * self.RES[SS])
     height = int(self.DEFAULT_HEIGHT * self.RES[SS])
@@ -251,6 +211,19 @@ class ShelfApp(tk.Tk):
       child.grid_columnconfigure(0, weight=blank_space)
       child.grid_columnconfigure(1, weight=1)
       child.grid_columnconfigure(2, weight=blank_space)
+
+  def setup_screen(self, frame_name="splash"):
+    self.set_resolution(self.SS)
+    self.toggle_frame(frame_name)
+
+  def load_fonts(self):
+
+    if not self.asset_dir:
+      return
+
+    for file in os.listdir(self.asset_dir):
+      if file.endswith('.ttf'):
+        load_unload_font(os.path.join(self.asset_dir, file))
 
   def create_frame(self, name, pack_method=None):
     frame = tk.Frame(
@@ -290,6 +263,39 @@ class ShelfApp(tk.Tk):
     title += f" : {display_name}" if display_name != "Shelf" else ""
     self.title(title)
 
+  def bind_keys(self):
+
+    for i in ['Escape', 'X', 'x']:
+      self.bind(f"<{i}>", self.controller.escape)
+
+    controls = {
+      "prv_op": ["Up", "Shift-Tab"], "nxt_op": ["Down", "Tab"],
+      "dec_val": ["Left"], "inc_val": ["Right"],
+      "run_op": ['Return', 'C', 'c', 'Z', 'z', 'space']
+    }
+
+    for func, keys in controls.items():
+      for key in keys:
+        self.bind(f"<{key}>", partial(self.controller.run_func, func_name=func))
+
+  def start_tray(self):
+    self.withdraw()
+    self.init_tray()
+    self.system_tray.run()
+    self.system_tray = None
+
+  def stop_tray(self, tray=None, cmd=None, fr=None):
+    self.system_tray.stop()
+    self.system_tray = None
+
+    if fr:
+      self.after(0, lambda: self._win_from_tray(fr))
+
+  def _win_from_tray(self, fr):
+    self.deiconify()
+    self.lift()
+    self.toggle_frame(fr)
+
   def add_or_update_game(self, exe_val, img_val, mus_val):
     self.cur_game.update({"exe": exe_val, "img": img_val, "mus": mus_val})
 
@@ -316,10 +322,3 @@ class ShelfApp(tk.Tk):
       self.toggle_frame('shelf')
     else:
       self.toggle_frame('splash')
-
-  def lift(self):
-    super().lift()
-
-    self.attributes('-topmost', 1)
-    self.focus_force()
-    self.after_idle(self.attributes,'-topmost',False)
