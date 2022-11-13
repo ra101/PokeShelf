@@ -1,4 +1,4 @@
-import subprocess
+import subprocess, os
 import tkinter as tk
 from tkinter import font
 from functools import partial
@@ -405,6 +405,8 @@ class GameSettingsFrame:
         '!responsiveentry'
       ].set_value(cur_game.get(key, ''))
 
+    GameSettingsFrame.exe_cmd(lambda: cur_game.get('exe',''), cur_fr.lbl)
+
     # Select 0th
     cur_fr.unselect_all()
     cur_fr.select(0)
@@ -505,10 +507,21 @@ class GameSettingsFrame:
     self.create_cancel_button(form_frame)
 
   def create_game_title(self, form_frame):
-    res_wids.ResponsiveLabel(
-      form_frame, fg=form_wids.BaseFormWidget.ON_COLOR, bg=form_frame['bg'],
+    form_frame.master.lbl = res_wids.ResponsiveLabel(
+      form_frame, fg="#999", bg=form_frame['bg'],
       root=self.root, font=font.Font(family="Power Green",weight=font.BOLD, size=20),
-    ).grid(column=1, row=0, sticky=tk.W, pady=3)
+    )
+    form_frame.master.lbl.grid(
+      column=1, row=0, sticky=tk.W, pady=3, columnspan=2,
+    )
+
+  @staticmethod
+  def exe_cmd(set_value_func, label):
+    file_path = set_value_func()
+    if file_path.endswith('exe'):
+      label.config({"text": os.path.basename(os.path.dirname(file_path))[:32]})
+    else:
+      label.config({"text": os.path.basename(file_path)[:32]})
 
   def create_game_settings(self, body_frame):
     game_exe = form_wids.InputFieldV2(
@@ -521,6 +534,10 @@ class GameSettingsFrame:
     for i in ['cursor', 'heading', 'textbox', 'browse_frame']:
       getattr(game_exe, i).grid_configure({"pady":2})
     game_exe.grid(row=1)
+    game_exe.input_frame.cmd = partial(
+      self.exe_cmd, game_exe.input_frame.cmd, body_frame.master.lbl
+    )
+
     self.exe_textbox = game_exe.textbox
 
     game_image = form_wids.InputFieldV2(
@@ -625,7 +642,7 @@ class GameSettingsFrame:
   @staticmethod
   def button_on_off(label, selected=True, save=False):
     text_color, border_color, bg_color = [
-      [form_wids.BaseFormWidget.OFF_COLOR, form_wids.BaseFormWidget.FIX_COLOR, label.master['bg']],
+      [form_wids.BaseFormWidget.FIX_COLOR, form_wids.BaseFormWidget.OFF_COLOR, label.master['bg']],
       [
         [form_wids.BaseFormWidget.CANCEL_COLOR, form_wids.BaseFormWidget.SAVE_COLOR][save],
         form_wids.BaseFormWidget.ON_COLOR, form_wids.BaseFormWidget.BG_COLOR
