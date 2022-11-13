@@ -7,7 +7,8 @@ pyinstaller -y -F -w --clean -i ./Assets/PokeShelf.ico^
  --add-data __init__.py;. --add-data app.py;. --add-data controllers.py;.^
  --add-data form_wids.py;. --add-data frames.py;. --add-data res_wids.py;.^
  --add-data utils.py;.^
- --add-data LICENSE;. --workpath .\Build --distpath .\Dist -n app __main__.py
+ --add-data LICENSE;. --workpath .\Build --distpath .\Dist\PokeShelf^
+ -n PokeShelf __main__.py
 
 python post_build.py
 
