@@ -1,6 +1,9 @@
+import subprocess
 import tkinter as tk
 from tkinter import font
 from functools import partial
+
+from PIL import ImageTk, Image
 
 import res_wids, form_wids
 
@@ -564,14 +567,27 @@ class GameSettingsFrame:
 
   def save_cmd(self):
 
-    exe_val, img_val, mus_val = [
-      self.exe_textbox.get(), self.mus_textbox.get(), self.mus_textbox.get()
-    ]
-    is_new = not bool(self.root.cur_game)
+    exe_val = self.exe_textbox.get()
 
     if not exe_val:
       form_wids.DialogBox(self.root, "Game not Selected!")
       return
+
+    if not self.root.DS and exe_val.endswith('.nds'):
+      form_wids.DialogBox(
+        self.root, "Select `DS Emulator`\nin Options <Alt+S>\n" \
+        "before adding NDS ROM!", time=2000)
+      return
+
+    if not self.root.GB and (exe_val.endswith('.gb') \
+      or exe_val.endswith('.gbc') or exe_val.endswith('.gba')):
+      form_wids.DialogBox(
+        self.root, "Select `GB Emulator`\nin Options <Alt+S>\n" \
+          "before adding GBx ROM!", time=2000)
+      return
+
+    img_val, mus_val = self.img_textbox.get(), self.mus_textbox.get()
+    is_new = not bool(self.root.cur_game)
 
     self.root.add_or_update_game(exe_val, img_val, mus_val)
     self.root.save_config()
@@ -673,6 +689,20 @@ class SplashFrame:
     game_menu.entryconfig("🔧 Edit Game", state="disabled")
     game_menu.entryconfig("➖ Remove Game", state="disabled")
 
+    headline = "Add Your First Game to Get Started"
+    if cur_fr.master.GD:
+      headline = "Press Enter to Browse Shelf"
+
+    cur_fr.headlabel.config({"text": headline})
+
+    cur_fr.run_op = partial(SplashFrame.run_op, cur_fr)
+
+
+  @staticmethod
+  def run_op(frame):
+    if frame.master.GD:
+      frame.master.toggle_frame('shelf')
+
   def create_title(self, win_frame):
     res_wids.ResponsiveLabel(
       win_frame, fg="#f33", bg="black", root=self.root,
@@ -687,16 +717,12 @@ class SplashFrame:
     ).grid(column=0, row=1, sticky=tk.N)
 
   def create_headline(self, win_frame):
-    text = "Add Your First Game to Get Started"
 
-    if self.root.GD:
-      text = "Press Enter to Browse Shelf"
-
-    res_wids.ResponsiveLabel(
+    win_frame.master.headlabel = res_wids.ResponsiveLabel(
       win_frame, fg="#3d3", bg="black", root=self.root,
-      font=font.Font(family="Power Green", weight=font.BOLD, size=15),
-      text=text,
-    ).grid(column=0, row=2, sticky=tk.N)
+      font=font.Font(family="Power Green", weight=font.BOLD, size=15), text="",
+    )
+    win_frame.master.headlabel.grid(column=0, row=2, sticky=tk.N)
 
   def create_desc(self, win_frame):
     res_wids.ResponsiveLabel(
@@ -719,6 +745,10 @@ class ShelfFrame:
 
   def create_frame(self):
     win_frame = self.root.create_frame("Shelf", self.pre_pack)
+    win_frame.grid_rowconfigure(0, weight=1)
+
+    win_frame.display_label = tk.Label(win_frame, background="black")
+    win_frame.display_label.grid(row=0, column=1, sticky=tk.NSEW)
 
     return win_frame
 
@@ -726,17 +756,56 @@ class ShelfFrame:
   @staticmethod
   def pre_pack(cur_fr):
 
+    root = cur_fr.master
+
     # Setup Menu
-    menu_bar = cur_fr.master.children['menu']
+    menu_bar = root.children['menu']
     menu_bar.entryconfig("💡 About", state="normal")
     menu_bar.entryconfig("⚙️ Options", state="normal")
 
     game_menu = menu_bar.children['game']
     game_menu.entryconfig("📚 PokéShelf", state="disabled")
     game_menu.entryconfig("➕ Add Game", state="normal")
-    game_menu.entryconfig(
-      "🔧 Edit Game", state="normal" if cur_fr.master.GD else "disabled"
+    game_menu.entryconfig("🔧 Edit Game", state="normal")
+    game_menu.entryconfig("➖ Remove Game", state="normal")
+    cur_fr.run_op = partial(ShelfFrame.run_op, root)
+
+    # get first game
+    for i in root.GO:
+      if i in root.GD:
+        root.cur_game = root.GD[i]
+        break
+
+    cur_fr.create_preview = partial(ShelfFrame.create_preview, cur_fr)
+    cur_fr.create_preview()
+
+
+  @staticmethod
+  def run_op(root):
+    file = root.cur_game['exe']
+
+    if file.endswith(".exe"):
+      subprocess.Popen(f'\"{file}\"')
+
+    elif file.endswith(".nds"):
+      subprocess.Popen(f'\"{root.DS}\" \"{file}\"')
+
+    elif file.endswith(".gb") or file.endswith(".gba") or file.endswith(".gbc"):
+      subprocess.Popen(f'\"{root.GB}\" \"{file}\"')
+
+    else:
+      form_wids.DialogBox(root, "Unknown File Type!")
+      return
+
+    root.destroy()
+
+  @staticmethod
+  def create_preview(frame):
+    root = frame.master
+    height = root.winfo_screenheight()
+    width = int(height/0.75)
+
+    frame.image = ImageTk.PhotoImage(
+      Image.open(root.cur_game['img']).resize((width,height), Image.ANTIALIAS)
     )
-    game_menu.entryconfig(
-      "➖ Remove Game", state="normal" if cur_fr.master.GD else "disabled"
-    )
+    frame.display_label.config({"image": frame.image})

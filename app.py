@@ -1,7 +1,9 @@
 import os, json, sys
-
 import tkinter as tk
 from functools import partial
+
+from PIL import Image
+from pystray import Icon as Tray, MenuItem as TrayCmd
 
 import frames, controllers
 from utils import load_unload_font
@@ -26,6 +28,14 @@ class ShelfApp(tk.Tk):
     return super().mainloop(n)
 
   def destroy(self):
+
+    if self.ST and self.icon_path:
+      if not self.system_tray:
+        self.start_tray()
+        return
+      else:
+        self.stop_tray()
+
     if self.asset_dir:
       for file in os.listdir(self.asset_dir):
         if file.endswith('.ttf'):
@@ -35,12 +45,31 @@ class ShelfApp(tk.Tk):
 
     return super().destroy()
 
+  def start_tray(self):
+    self.withdraw()
+    self.init_tray()
+    self.system_tray.run()
+    self.system_tray = None
+
+  def stop_tray(self, tray=None, cmd=None, fr=None):
+    self.system_tray.stop()
+    self.system_tray = None
+
+    if fr:
+      self.after(0, lambda: self._win_from_tray(fr))
+
+  def _win_from_tray(self, fr):
+    self.deiconify()
+    self.lift()
+    self.toggle_frame(fr)
+
   def setup_screen(self, frame_name="splash"):
     self.set_resolution(self.SS)
     self.toggle_frame(frame_name)
 
   def init_vars(self):
-    self.base_dir, self.asset_dir, self.dialog_box = [None]*3
+    self.base_dir, self.asset_dir, self.icon_path = None, None, None
+    self.dialog_box, self.system_tray = None, None
 
     if getattr(sys, 'frozen', False):
       self.base_dir = os.path.dirname(sys.executable)
@@ -55,11 +84,7 @@ class ShelfApp(tk.Tk):
 
     self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT = 512, 384
     self.RES = dict(S=0.5, M=1, L=1.5, XL=2, FS=2.5)
-    self.cur_fr, self.cur_game = None, {}
-
-    win_w, win_h  = self.winfo_screenwidth(), self.winfo_screenheight()
-    self.RES['FS'] = win_h/self.DEFAULT_HEIGHT
-    self.fs_width = int(win_h/((win_w*0.75) - win_h))
+    self.RES['FS'] = self.winfo_screenheight()/self.DEFAULT_HEIGHT
 
     self.controller = controllers.ShelfController(self)
 
@@ -75,6 +100,7 @@ class ShelfApp(tk.Tk):
       config_data['GBEmulator'] = self.GB = ""
       config_data['DSEmulator'] = self.DS = ""
       config_data['gameList'], self.GD = [], {}
+      config_data['systemTray'] = self.ST = False
 
       with open(self.config_file, "w") as f:
         json.dump(config_data, f, indent=4)
@@ -90,6 +116,7 @@ class ShelfApp(tk.Tk):
         self.GB = config_data.get("GBEmulator", "")
         self.DS = config_data.get("DSEmulator", "")
         self.GD = { i['oid']: i for i in config_data.get("gameList", []) }
+        self.ST = config_data.get("systemTray", False)
 
   def save_config(self):
     self.config_file = os.path.join(self.base_dir, 'config.json')
@@ -101,7 +128,8 @@ class ShelfApp(tk.Tk):
         "gameOrder": getattr(self, "GO", []),
         "GBEmulator": getattr(self, "GB", ""),
         "DSEmulator": getattr(self, "DS", ""),
-        "gameList": list(getattr(self, "GD", {}).values())
+        "gameList": list(getattr(self, "GD", {}).values()),
+        "systemTray": getattr(self, "ST", False),
       }, f, indent=4)
 
   def init_screen(self):
@@ -118,8 +146,20 @@ class ShelfApp(tk.Tk):
 
     for file in os.listdir(self.asset_dir):
       if file.endswith('.ico'):
-        self.iconbitmap(os.path.join(self.asset_dir, file))
+        self.icon_path = os.path.join(self.asset_dir, file)
+        self.iconbitmap(self.icon_path)
         return
+
+  def init_tray(self):
+    self.system_tray = Tray(
+      name="PokéShelf : Tray", title="PokéShelf",
+      icon=Image.open(self.icon_path),
+      menu=(
+        TrayCmd('PokéShelf', partial(self.stop_tray, fr="splash")),
+        TrayCmd('Options', partial(self.stop_tray, fr="options")),
+        TrayCmd('About', partial(self.stop_tray, fr="about")),
+        TrayCmd('Quit', self.destroy))
+    )
 
 
   def init_frames(self):
@@ -199,11 +239,9 @@ class ShelfApp(tk.Tk):
     width = int(self.DEFAULT_WIDTH * self.RES[SS])
     height = int(self.DEFAULT_HEIGHT * self.RES[SS])
 
-    is_fs, self.SS = bool(SS=='FS'), SS
-    blank_space = 1 if is_fs else 0
-    bound_width = self.fs_width if is_fs else 1
-
-    self.attributes('-fullscreen', is_fs)
+    self.is_fs, self.SS = bool(SS=='FS'), SS
+    blank_space = 1 if self.is_fs else 0
+    self.attributes('-fullscreen', self.is_fs)
     self.geometry(f'{width}x{height}')
 
     for child in self.children.values():
@@ -211,7 +249,7 @@ class ShelfApp(tk.Tk):
         continue
 
       child.grid_columnconfigure(0, weight=blank_space)
-      child.grid_columnconfigure(1, weight=bound_width)
+      child.grid_columnconfigure(1, weight=1)
       child.grid_columnconfigure(2, weight=blank_space)
 
   def create_frame(self, name, pack_method=None):
@@ -278,3 +316,10 @@ class ShelfApp(tk.Tk):
       self.toggle_frame('shelf')
     else:
       self.toggle_frame('splash')
+
+  def lift(self):
+    super().lift()
+
+    self.attributes('-topmost', 1)
+    self.focus_force()
+    self.after_idle(self.attributes,'-topmost',False)
