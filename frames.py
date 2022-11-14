@@ -208,11 +208,11 @@ class OptionsFrame:
       head_frame, fg="#333", bg="#ddd", root=self.root,
       font=font.Font(family="Power Green",weight=font.BOLD, size=25),
       text="Options..."
-    ).grid(column=0, row=0, sticky=tk.W, padx=20, pady=3)
+    ).grid(column=0, row=0, sticky=tk.W, padx=3, pady=3)
     # </h1>
 
     #</head>
-    head_frame.grid(column=1, row=0, sticky=tk.NSEW, padx=5, pady=3)
+    head_frame.grid(column=1, row=0, sticky=tk.NSEW, padx=3, pady=3)
 
   def create_settings(self, win_frame):
     # <body />
@@ -220,7 +220,7 @@ class OptionsFrame:
       win_frame, bg="#ddd", highlightthickness=5, name='body',
       highlightbackground="#639", root=self.root, highlightcolor="#639"
     )
-    form_frame.grid(column=1, row=1, sticky=tk.NSEW, padx=5, pady=3)
+    form_frame.grid(column=1, row=1, sticky=tk.NSEW, padx=3, pady=3)
 
     self.create_music_setting(form_frame)
     self.create_size_setting(form_frame)
@@ -492,13 +492,13 @@ class GameSettingsFrame:
     # <h1>
     win_frame.header =  res_wids.ResponsiveLabel(
       head_frame, fg="#333", bg="#ddd", root=self.root,
-      font=font.Font(family="Power Green",weight=font.BOLD, size=30),
+      font=font.Font(family="Power Green",weight=font.BOLD, size=25),
     )
-    win_frame.header.grid(column=0, row=0, sticky=tk.W, padx=20, pady=3)
+    win_frame.header.grid(column=0, row=0, sticky=tk.W, padx=3, pady=3)
     # </h1>
 
     #</head>
-    head_frame.grid(column=1, row=0, sticky=tk.NSEW, padx=5, pady=3)
+    head_frame.grid(column=1, row=0, sticky=tk.NSEW, padx=3, pady=3)
 
   def create_settings(self, win_frame):
     # <body />
@@ -506,7 +506,7 @@ class GameSettingsFrame:
       win_frame, bg="#ddd", highlightthickness=5, name="body",
       highlightbackground="#639", root=self.root, highlightcolor="#639"
     )
-    form_frame.grid(column=1, row=1, sticky=tk.NSEW, padx=5, pady=3)
+    form_frame.grid(column=1, row=1, sticky=tk.NSEW, padx=3, pady=3)
 
     self.create_game_title(form_frame)
     self.create_game_settings(form_frame)
@@ -539,7 +539,7 @@ class GameSettingsFrame:
       font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
     )
     for i in ['cursor', 'heading', 'textbox', 'browse_frame']:
-      getattr(game_exe, i).grid_configure({"pady":2})
+      getattr(game_exe, i).grid_configure({"pady":0})
     game_exe.grid(row=1)
     game_exe.input_frame.cmd = partial(
       self.exe_cmd, game_exe.input_frame.cmd, body_frame.master.lbl
@@ -555,7 +555,7 @@ class GameSettingsFrame:
       font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
     )
     for i in ['cursor', 'heading', 'textbox', 'browse_frame']:
-      getattr(game_image, i).grid_configure({"pady":2})
+      getattr(game_image, i).grid_configure({"pady":11})
     game_image.grid(row=2)
     self.img_textbox = game_image.textbox
 
@@ -566,7 +566,7 @@ class GameSettingsFrame:
       font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
     )
     for i in ['cursor', 'heading', 'textbox', 'browse_frame']:
-      getattr(game_music, i).grid_configure({"pady":2})
+      getattr(game_music, i).grid_configure({"pady":11})
     game_music.grid(row=3)
     self.mus_textbox = game_music.textbox
 
@@ -576,7 +576,7 @@ class GameSettingsFrame:
       highlightbackground=form_wids.BaseFormWidget.OFF_COLOR,
       highlightcolor=form_wids.BaseFormWidget.OFF_COLOR, highlightthickness=3
     )
-    button_frame.grid(column=0, pady=2, columnspan=2,  row=5, sticky=tk.NS)
+    button_frame.grid(column=0, pady=11, columnspan=2,  row=5, sticky=tk.NS)
 
     button_label = res_wids.ResponsiveLabel(
       button_frame, root=self.root, bg=body_frame['bg'],
@@ -627,7 +627,7 @@ class GameSettingsFrame:
       highlightbackground=form_wids.BaseFormWidget.FIX_COLOR,
       highlightcolor=form_wids.BaseFormWidget.FIX_COLOR, highlightthickness=3
     )
-    button_frame.grid(column=2, pady=2, row=5, sticky=tk.NS)
+    button_frame.grid(column=2, pady=11, row=5, sticky=tk.NS)
 
     button_label = res_wids.ResponsiveLabel(
       button_frame, root=self.root, bg=body_frame['bg'],
@@ -826,7 +826,7 @@ class ShelfFrame:
   @staticmethod
   def create_preview(frame):
     root = frame.master
-    height = root.winfo_screenheight()
+    height = root.winfo_height()
     width = int(height/0.75)
 
     frame.image = ImageTk.PhotoImage(

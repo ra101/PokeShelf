@@ -200,17 +200,22 @@ class ShelfApp(tk.Tk):
     height = int(self.DEFAULT_HEIGHT * self.RES[SS])
 
     self.is_fs, self.SS = bool(SS=='FS'), SS
-    blank_space = 1 if self.is_fs else 0
-    self.attributes('-fullscreen', self.is_fs)
+    c_weight = 1 if self.is_fs else 0
     self.geometry(f'{width}x{height}')
+    self.attributes('-fullscreen', self.is_fs)
+    canvas_width = int(
+      (self.winfo_width()*0.5) - (self.winfo_height()*1.5)
+    ) if self.is_fs else 0
 
     for child in self.children.values():
       if not isinstance(child, tk.Frame):
         continue
 
-      child.grid_columnconfigure(0, weight=blank_space)
+      child.grid_columnconfigure(0, weight=c_weight)
       child.grid_columnconfigure(1, weight=1)
-      child.grid_columnconfigure(2, weight=blank_space)
+      child.grid_columnconfigure(2, weight=c_weight)
+      child.l_canvas.config(width=canvas_width)
+      child.r_canvas.config(width=canvas_width)
 
   def setup_screen(self, frame_name="splash"):
     self.set_resolution(self.SS)
@@ -231,11 +236,17 @@ class ShelfApp(tk.Tk):
       highlightbackground="black", highlightcolor="black"
     )
     frame.pack(expand=True, fill='both')
-    frame.grid_columnconfigure(0, weight=0)
+    frame.grid_columnconfigure(0, weight=1)
     frame.grid_columnconfigure(1, weight=1)
-    frame.grid_columnconfigure(2, weight=0)
+    frame.grid_columnconfigure(2, weight=1)
     frame.display_name = name
     frame.pre_pack = pack_method if pack_method else lambda _: None
+
+    frame.l_canvas = tk.Canvas(frame, width=0, background="black", highlightthickness=0)
+    frame.l_canvas.grid(column=0, row=0, rowspan=20)
+
+    frame.r_canvas = tk.Canvas(frame, width=0, background="black", highlightthickness=0)
+    frame.r_canvas.grid(column=2, row=0, rowspan=20)
 
     return frame
 
