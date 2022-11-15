@@ -88,6 +88,8 @@ class Slider(BaseFormWidget):
     )
     self.counter.value = value
 
+    self.sound_server = getattr(master.root, 'sound_server', None)
+
     self.input_frame.select = partial(self.on_off, True)
     self.input_frame.unselect = partial(self.on_off, False)
     self.input_frame.inc_val = partial(self.change_value, 5)
@@ -109,6 +111,8 @@ class Slider(BaseFormWidget):
     self.slider.config({"text": (("─"*(value//5))+'█'+("─"*(20-(value//5))))})
     self.counter.config({"text": f'{"0"*(3-len(f"{value}"))}{value}%'})
 
+    if self.sound_server:
+      self.sound_server.setAmp(self.counter.value/100)
 
   def grid(self, row):
     super().grid(row)

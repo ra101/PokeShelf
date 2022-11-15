@@ -3,6 +3,7 @@ import tkinter as tk
 from functools import partial
 
 from PIL import Image
+from pyo import SfPlayer, Server as SfServer
 from pystray import Icon as Tray, MenuItem as TrayCmd
 
 import frames, utils
@@ -27,10 +28,12 @@ class ShelfApp(tk.Tk):
     return super().mainloop(n)
 
   def destroy(self):
+    self.sound_server.stop()
 
     if self.ST and self.icon_path:
       if not self.system_tray:
         self.start_tray()
+        self.sound_server.start()
         return
       else:
         self.stop_tray()
@@ -65,12 +68,28 @@ class ShelfApp(tk.Tk):
 
     self.init_config()
     self.load_fonts()
+    self.init_sound_server(self.MV)
 
     self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT = 512, 384
     self.RES = dict(S=0.5, M=1, L=1.5, XL=2, FS=2.5)
     self.RES['FS'] = self.winfo_screenheight()/self.DEFAULT_HEIGHT
 
-    self.controller = controllers.ShelfController(self)
+  def init_sound_server(self, MV=100):
+    self.sound_server = SfServer().boot()
+    self.sound_server.setAmp(MV/100)
+    self.sound_server.start()
+
+    if not self.asset_dir:
+      return
+
+    for file in os.listdir(self.asset_dir):
+      if file.endswith('.ogg'):
+        self.default_sound = SfPlayer(
+          path=os.path.join(self.asset_dir, file), loop=True
+        )
+        self.default_sound.out()
+        return
+
 
   def init_config(self):
     self.config_file = os.path.join(self.base_dir, 'config.json')

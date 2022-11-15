@@ -559,7 +559,7 @@ class GameSettingsFrame:
 
     game_music = form_wids.InputFieldV2(
       body_frame, heading="BG Music", value="", ft= [
-        ['Music', '.mp3 .ogg .wav .aac .wma'],
+        ['Music', '.wav .ogg .flac'],
       ],
       font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
     )
