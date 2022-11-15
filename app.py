@@ -28,12 +28,12 @@ class ShelfApp(tk.Tk):
     return super().mainloop(n)
 
   def destroy(self):
-    self.sound_server.stop()
+    self.music_server.stop()
 
     if self.ST and self.icon_path:
       if not self.system_tray:
         self.start_tray()
-        self.sound_server.start()
+        self.music_server.start()
         return
       else:
         self.stop_tray()
@@ -68,26 +68,26 @@ class ShelfApp(tk.Tk):
 
     self.init_config()
     self.load_fonts()
-    self.init_sound_server(self.MV)
+    self.init_music_server(self.MV)
 
     self.DEFAULT_WIDTH, self.DEFAULT_HEIGHT = 512, 384
     self.RES = dict(S=0.5, M=1, L=1.5, XL=2, FS=2.5)
     self.RES['FS'] = self.winfo_screenheight()/self.DEFAULT_HEIGHT
 
-  def init_sound_server(self, MV=100):
-    self.sound_server = SfServer().boot()
-    self.sound_server.setAmp(MV/100)
-    self.sound_server.start()
+  def init_music_server(self, MV=100):
+    self.music_server = SfServer().boot()
+    self.music_server.setAmp(MV/100)
+    self.music_server.start()
 
     if not self.asset_dir:
       return
 
     for file in os.listdir(self.asset_dir):
       if file.endswith('.ogg'):
-        self.default_sound = SfPlayer(
+        self.default_music = SfPlayer(
           path=os.path.join(self.asset_dir, file), loop=True
         )
-        self.default_sound.out()
+        self.default_music.out()
         return
 
 
@@ -121,8 +121,12 @@ class ShelfApp(tk.Tk):
         self.ST = bool(config_data.get("systemTray", False))
         self.GD = { i['oid']: i for i in config_data.get("gameList", []) }
 
+    self._check_and_fix_order()
+
   def save_config(self):
     self.config_file = os.path.join(self.base_dir, 'config.json')
+
+    self._check_and_fix_order()
 
     with open(self.config_file, "w") as f:
       json.dump({
@@ -243,7 +247,7 @@ class ShelfApp(tk.Tk):
       if file.endswith('.ttf'):
         utils.load_unload_font(os.path.join(self.asset_dir, file))
 
-  def create_frame(self, name, pack_method=None):
+  def create_frame(self, name, pre=None, post=None):
     frame = tk.Frame(
       self, bg="black", highlightthickness=5, name=str.lower(name),
       highlightbackground="black", highlightcolor="black"
@@ -253,7 +257,8 @@ class ShelfApp(tk.Tk):
     frame.grid_columnconfigure(1, weight=1000)
     frame.grid_columnconfigure(2, weight=1)
     frame.display_name = name
-    frame.pre_pack = pack_method if pack_method else lambda _: None
+    frame.pre_pack = pre if pre else lambda _: None
+    frame.post_forget = post if post else lambda _: None
 
     frame.l_canvas = tk.Canvas(frame, width=0, background="black", highlightthickness=0)
     frame.l_canvas.grid(column=0, row=0, rowspan=100, sticky=tk.NS)
@@ -272,16 +277,19 @@ class ShelfApp(tk.Tk):
       self.frame_resize(wid, event)
 
   def toggle_frame(self, frame_name, pre_pack_args=None):
-    self.cur_fr = self.children[frame_name]
+    nxt_fr = self.children[frame_name]
 
     for child in self.winfo_children():
-      if not isinstance(child, tk.Frame) or self.cur_fr == frame_name:
+      if not isinstance(child, tk.Frame) or nxt_fr == frame_name:
         continue
       child.pack_forget()
+      if getattr(self, 'cur_fr', None) and child == self.cur_fr:
+        child.post_forget(child)
 
-    self.frame_resize(self.cur_fr)
-    self.cur_fr.pre_pack(self.cur_fr, **(pre_pack_args or {}))
-    self.cur_fr.pack(fill='both', expand=True)
+    self.frame_resize(nxt_fr)
+    self.cur_fr = nxt_fr
+    nxt_fr.pre_pack(nxt_fr, **(pre_pack_args or {}))
+    nxt_fr.pack(fill='both', expand=True)
 
     display_name, title = self.cur_fr.display_name, 'PokéShelf'
     title += f" : {display_name}" if display_name != "Shelf" else ""
@@ -370,3 +378,26 @@ class ShelfApp(tk.Tk):
     if func_name:
       func = getattr(event.widget.cur_fr, func_name, None)
       func() if func else None
+
+  def _check_and_fix_order(self):
+    # uniquify
+    unique_g_order = []
+
+    for x in self.GO:
+      if x not in unique_g_order:
+        unique_g_order.append(x)
+
+    self.GO = unique_g_order
+
+    # maintain 1-to-1 b/w g_order & g_dict
+    g_order = set(self.GO)
+    g_dict = set(self.GD)
+
+    items_to_be_removed = g_order - g_dict
+    items_to_be_added = g_dict - g_order
+
+    for item in items_to_be_removed:
+      self.GO.remove(item)
+
+    for item in items_to_be_added:
+      self.GO.append(item)

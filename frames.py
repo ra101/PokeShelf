@@ -547,8 +547,8 @@ class GameSettingsFrame:
 
     game_image = form_wids.InputFieldV2(
       body_frame, heading="BG Img/Vid", value="", ft=[
-        ['Img/Vid', '.png .jpg .jpeg .bmp .gif .mp4 .mkv .mpg .flv .mov .wmv .avi'],
-        ['Image', '.png .jpg .jpeg .bmp .gif'], ['Video', '.mp4 .mkv .mpg .flv .mov .wmv .avi'],
+        ['Img/Vid', '.png .jpg .jpeg .bmp .gif .mp4 .mkv .webm .avi .mov'],
+        ['Image', '.png .jpg .jpeg .bmp .gif'], ['Video', '.mp4 .mkv .webm .avi .mov'],
       ],
       font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
     )
@@ -766,22 +766,37 @@ class ShelfFrame:
     self.frame = self.create_frame()
 
   def create_frame(self):
-    win_frame = self.root.create_frame("Shelf", self.pre_pack)
+    win_frame = self.root.create_frame("Shelf", self.pre_pack, self.post_forget)
     win_frame.grid_rowconfigure(0, weight=1)
-
-    win_frame.display_label = form_wids.GamePreviewer(
-      win_frame, background="black", root=self.root,
-      font=font.Font(family="Power Green",weight=font.BOLD, size=40),
-    )
-    win_frame.display_label.grid(row=0, column=1, sticky=tk.NSEW)
 
     return win_frame
 
+  @staticmethod
+  def post_forget(cur_fr):
+    if cur_fr.display:
+      cur_fr.display.stop_default_music()
+      cur_fr.display.stop_music()
+      cur_fr.display.play_default_music()
+
+  @staticmethod
+  def create_display(cur_frame):
+    display = form_wids.GamePreviewer(
+      cur_frame, background="black", root=cur_frame.master,
+      font=font.Font(family="Power Green",weight=font.BOLD, size=40),
+    )
+    display.grid(row=0, column=1, sticky=tk.NSEW)
+    display.preview(cur_frame.master.cur_game)
+    return display
+
+  @staticmethod
+  def destroy_display(display):
+    display.remove_all()
+    display.destroy()
 
   @staticmethod
   def pre_pack(cur_fr):
 
-    root = cur_fr.master
+    root, cur_fr.display = cur_fr.master, None
 
     # Setup Menu
     menu_bar = root.children['menu']
@@ -794,16 +809,24 @@ class ShelfFrame:
     game_menu.entryconfig("🔧 Edit Game", state="normal")
     game_menu.entryconfig("➖ Remove Game", state="normal")
     cur_fr.run_op = partial(ShelfFrame.run_op, root)
+    cur_fr.inc_val = partial(ShelfFrame.chg_val, cur_fr, root, 1)
+    cur_fr.dec_val = partial(ShelfFrame.chg_val, cur_fr, root, -1)
 
-    # get first game
-    for i in root.GO:
-      if i in root.GD:
-        root.cur_game = root.GD[i]
-        break
+    root.cur_game = getattr(root, "cur_game", {}) or root.GD[root.GO[0]]
+    cur_fr.display = ShelfFrame.create_display(cur_fr)
 
-    cur_fr.create_preview = partial(ShelfFrame.create_preview, cur_fr)
-    cur_fr.create_preview()
+  @staticmethod
+  def chg_val(cur_fr, root, val):
 
+    old_idx = root.GO.index(root.cur_game['oid'])
+    new_idx = (old_idx + val) % len(root.GO)
+    if old_idx != new_idx:
+      root.cur_game = root.GD[root.GO[new_idx]]
+
+      if cur_fr.display:
+        ShelfFrame.destroy_display(cur_fr.display)
+
+      cur_fr.display = ShelfFrame.create_display(cur_fr)
 
   @staticmethod
   def run_op(root):
@@ -823,12 +846,3 @@ class ShelfFrame:
       return
 
     root.destroy()
-
-  @staticmethod
-  def create_preview(frame):
-    cur_game = frame.master.cur_game
-
-    if cur_game['img']:
-      frame.display_label.start(cur_game['img'])
-    else:
-      frame.display_label.set_title(cur_game['exe'])

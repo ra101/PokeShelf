@@ -4,6 +4,7 @@ from tkinter import font
 from tkinter.filedialog import askopenfilename as select_file
 from functools import partial
 
+from pyo import SfPlayer
 from tkVideoPlayer import TkinterVideo
 
 from res_wids import ResponsiveEntry, ResponsiveFrame, ResponsiveLabel
@@ -89,7 +90,7 @@ class Slider(BaseFormWidget):
     )
     self.counter.value = value
 
-    self.sound_server = getattr(master.root, 'sound_server', None)
+    self.music_server = getattr(master.root, 'music_server', None)
 
     self.input_frame.select = partial(self.on_off, True)
     self.input_frame.unselect = partial(self.on_off, False)
@@ -112,8 +113,8 @@ class Slider(BaseFormWidget):
     self.slider.config({"text": (("─"*(value//5))+'█'+("─"*(20-(value//5))))})
     self.counter.config({"text": f'{"0"*(3-len(f"{value}"))}{value}%'})
 
-    if self.sound_server:
-      self.sound_server.setAmp(self.counter.value/100)
+    if self.music_server:
+      self.music_server.setAmp(self.counter.value/100)
 
   def grid(self, row):
     super().grid(row)
@@ -359,7 +360,53 @@ class GamePreviewer(TkinterVideo):
 
     self.config({"text": title, "fg": self.GAME_COLOR.get(file_ext)})
 
-  def start(self, path):
-    self.config(text='')
-    self.load(path)
-    self.play()
+  def run_video(self, path, alt):
+
+    for _, _, files in os.walk(os.path.dirname(path)):
+      if os.path.basename(path) in files:
+        if os.path.splitext(path)[-1] in [
+          '.png', '.jpg', '.jpeg', '.bmp', '.gif', '.mp4', '.mkv', '.webm', '.avi', '.mov'
+        ]:
+          self.load(path)
+          self.play()
+          alt = ''
+          break
+
+    self.set_title(alt)
+
+  def play_default_music(self):
+    music = getattr(self.root, 'default_music', None)
+    music.out() if music else None
+
+  def stop_default_music(self):
+    music = getattr(self.root, 'default_music', None)
+    music.stop() if music else None
+
+  def play_music(self, path):
+    try:
+      self.music = SfPlayer(path=path, loop=True)
+      self.music.out()
+    except Exception:
+      self.play_default_music()
+
+  def stop_music(self):
+    music = getattr(self ,'music', None)
+    music.stop() if music else None
+
+  def remove_all(self):
+    self.stop()
+    self.stop_music()
+    self.stop_default_music()
+
+  def preview(self, game):
+    self.remove_all()
+
+    if game['img']:
+      self.run_video(game['img'], game['exe'])
+    else:
+      self.set_title(game['exe'])
+
+    if game['mus']:
+      self.play_music(game['mus'])
+    else:
+      self.play_default_music()
