@@ -355,6 +355,10 @@ class OptionsFrame:
 
 class GameSettingsFrame:
 
+  IMG_EXTS = ['.png', '.jpg', '.jpeg', '.bmp', '.gif']
+  MOV_EXTS = ['.mp4', '.mkv', '.webm', '.avi', '.mov']
+  DIS_EXTS = [*IMG_EXTS, *MOV_EXTS]
+
   def __init__(self, root):
     self.root = root
     self.frame = self.create_frame()
@@ -521,12 +525,53 @@ class GameSettingsFrame:
     )
 
   @staticmethod
-  def exe_cmd(set_value_func, label):
+  def exe_cmd(set_value_func, game_label, img_textbox=None, mus_textbox=None):
     file_path = set_value_func()
     if file_path.endswith('exe'):
-      label.config({"text": os.path.basename(os.path.dirname(file_path))[:32]})
+      game_label.config({"text": os.path.basename(os.path.dirname(file_path))[:32]})
+
+      if not img_textbox or not mus_textbox:
+        return
+
+      bgm_dir = os.path.join(os.path.join(os.path.dirname(file_path), 'Audio'), 'BGM')
+      for _, _, files in os.walk(bgm_dir):
+        f_d = {}
+        for f in files:
+          n, e = os.path.splitext(f)
+          if e in [".wav", ".ogg", ".flac"]:
+            f_d[n.lower()] = f
+
+        title_f = None
+        for i in set(f_d.keys()):
+          if not title_f and i.startswith('title'):
+            title_f = i
+            break
+
+        if title_f:
+          mus_textbox.set_value(os.path.join(bgm_dir, f_d[title_f]))
+
+
+      bgi_dir = os.path.join(os.path.join(os.path.dirname(file_path), 'Graphics'), 'Titles')
+      for _, _, files in os.walk(bgi_dir):
+        f_d = {}
+        for f in files:
+          n, e = os.path.splitext(f)
+          if e in GameSettingsFrame.DIS_EXTS:
+            f_d[n.lower()] = f
+        title_f, splash_f = None, None
+        for i in set(f_d.keys()):
+          if not title_f and i.startswith('title'):
+            title_f = i
+          if not splash_f and i.startswith('splash'):
+            splash_f = i
+
+        if title_f:
+          img_textbox.set_value(os.path.join(bgi_dir, f_d[title_f]))
+        elif splash_f:
+          img_textbox.set_value(os.path.join(bgi_dir, f_d[splash_f]))
+
     else:
-      label.config({"text": os.path.basename(file_path)[:32]})
+      game_label.config({"text": os.path.basename(file_path)[:32]})
 
   def create_game_settings(self, body_frame):
     game_exe = form_wids.InputFieldV2(
@@ -539,16 +584,12 @@ class GameSettingsFrame:
     for i in ['cursor', 'heading', 'textbox', 'browse_frame']:
       getattr(game_exe, i).grid_configure({"pady":0})
     game_exe.grid(row=1)
-    game_exe.input_frame.cmd = partial(
-      self.exe_cmd, game_exe.input_frame.cmd, body_frame.master.lbl
-    )
-
     self.exe_textbox = game_exe.textbox
 
     game_image = form_wids.InputFieldV2(
       body_frame, heading="BG Img/Vid", value="", ft=[
-        ['Img/Vid', '.png .jpg .jpeg .bmp .gif .mp4 .mkv .webm .avi .mov'],
-        ['Image', '.png .jpg .jpeg .bmp .gif'], ['Video', '.mp4 .mkv .webm .avi .mov'],
+        ['Img/Vid', ' '.join(self.DIS_EXTS)],
+        ['Image', ' '.join(self.IMG_EXTS)], ['Video', ' '.join(self.MOV_EXTS)],
       ],
       font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
     )
@@ -567,6 +608,12 @@ class GameSettingsFrame:
       getattr(game_music, i).grid_configure({"pady":11})
     game_music.grid(row=3)
     self.mus_textbox = game_music.textbox
+
+    game_exe.input_frame.cmd = partial(
+      self.exe_cmd, set_value_func=game_exe.input_frame.cmd,
+      game_label=body_frame.master.lbl,
+      img_textbox=game_image.textbox, mus_textbox=game_music.textbox
+    )
 
   def create_save_button(self, body_frame):
     button_frame = res_wids.ResponsiveFrame(
