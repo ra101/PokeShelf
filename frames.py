@@ -769,7 +769,10 @@ class ShelfFrame:
     win_frame = self.root.create_frame("Shelf", self.pre_pack)
     win_frame.grid_rowconfigure(0, weight=1)
 
-    win_frame.display_label = tk.Label(win_frame, background="black")
+    win_frame.display_label = form_wids.GamePreviewer(
+      win_frame, background="black", root=self.root,
+      font=font.Font(family="Power Green",weight=font.BOLD, size=40),
+    )
     win_frame.display_label.grid(row=0, column=1, sticky=tk.NSEW)
 
     return win_frame
@@ -823,11 +826,9 @@ class ShelfFrame:
 
   @staticmethod
   def create_preview(frame):
-    root = frame.master
-    height = root.winfo_height()
-    width = int(height/0.75)
+    cur_game = frame.master.cur_game
 
-    frame.image = ImageTk.PhotoImage(
-      Image.open(root.cur_game['img']).resize((width,height), Image.ANTIALIAS)
-    )
-    frame.display_label.config({"image": frame.image})
+    if cur_game['img']:
+      frame.display_label.start(cur_game['img'])
+    else:
+      frame.display_label.set_title(cur_game['exe'])

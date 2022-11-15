@@ -6,7 +6,7 @@ dist_dir = os.path.join(os.path.join(base_dir, 'Dist'), 'PokeShelf')
 base_adir = os.path.join(base_dir, 'Assets')
 dist_adir = os.path.join(dist_dir, 'Assets')
 
-req_assets = ['pkmnem.ttf', 'PokeShelf.ico']
+req_assets = ['pkmnem.ttf', 'PokeShelf.ico', 'default.ogg']
 
 
 with open(os.path.join(dist_dir, 'config.json'), "w") as f:

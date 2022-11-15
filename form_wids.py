@@ -4,6 +4,7 @@ from tkinter import font
 from tkinter.filedialog import askopenfilename as select_file
 from functools import partial
 
+from tkVideoPlayer import TkinterVideo
 
 from res_wids import ResponsiveEntry, ResponsiveFrame, ResponsiveLabel
 
@@ -314,3 +315,51 @@ class DialogBox:
     root.dialog_box.label.destroy()
     root.dialog_box.destroy()
     root.dialog_box = None
+
+
+class GamePreviewer(TkinterVideo):
+  GAME_COLOR = {
+    ".gb": "#3d3",
+    ".gbc": "#FA0",
+    ".gba": "#90f",
+    ".nds": "#ddd",
+    ".exe": "#f33"
+  }
+
+  def _resize_event(self, event):
+    multipler = self.root.RES[self.root.SS]
+    font_data = {
+      **self.font, 'size': int(self.font['size']*multipler)
+    }
+    self.config(font = font.Font(**font_data))
+    return super()._resize_event(event)
+
+  def _loop_event(self, event):
+    if int(event.widget.current_duration()):
+        self.play()
+
+  def __init__(self, master, scaled=True, consistant_frame_rate=True, keep_aspect=False, *args, **kwargs):
+    self.root, self.font = kwargs.pop('root'), kwargs.pop('font').actual()
+    super().__init__(master, scaled, consistant_frame_rate, keep_aspect, *args, **kwargs)
+    self.bind("<<Ended>>", self._loop_event)
+
+  def set_title(self, file_path):
+    full_name, title, file_ext = '', '', os.path.splitext(file_path)[-1]
+
+    if file_ext == '.exe':
+      full_name = os.path.basename(os.path.dirname(file_path))
+    elif file_ext in ['.gb', '.gba', '.gbc', '.nds']:
+      full_name = os.path.splitext(os.path.basename(file_path))[0]
+
+    for i in full_name.split(' '):
+      if len(title.split('\n')[-1]) + len(i) > 16:
+        title += ('\n' + i) if title else i
+      else:
+        title += ' ' + i
+
+    self.config({"text": title, "fg": self.GAME_COLOR.get(file_ext)})
+
+  def start(self, path):
+    self.config(text='')
+    self.load(path)
+    self.play()
