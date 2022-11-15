@@ -358,6 +358,7 @@ class GameSettingsFrame:
   IMG_EXTS = ['.png', '.jpg', '.jpeg', '.bmp', '.gif']
   MOV_EXTS = ['.mp4', '.mkv', '.webm', '.avi', '.mov']
   DIS_EXTS = [*IMG_EXTS, *MOV_EXTS]
+  MUS_EXTS = [".wav", ".ogg", ".flac"]
 
   def __init__(self, root):
     self.root = root
@@ -528,50 +529,67 @@ class GameSettingsFrame:
   def exe_cmd(set_value_func, game_label, img_textbox=None, mus_textbox=None):
     file_path = set_value_func()
     if file_path.endswith('exe'):
-      game_label.config({"text": os.path.basename(os.path.dirname(file_path))[:32]})
-
-      if not img_textbox or not mus_textbox:
-        return
-
-      bgm_dir = os.path.join(os.path.join(os.path.dirname(file_path), 'Audio'), 'BGM')
-      for _, _, files in os.walk(bgm_dir):
-        f_d = {}
-        for f in files:
-          n, e = os.path.splitext(f)
-          if e in [".wav", ".ogg", ".flac"]:
-            f_d[n.lower()] = f
-
-        title_f = None
-        for i in set(f_d.keys()):
-          if not title_f and i.startswith('title'):
-            title_f = i
-            break
-
-        if title_f:
-          mus_textbox.set_value(os.path.join(bgm_dir, f_d[title_f]))
-
-
-      bgi_dir = os.path.join(os.path.join(os.path.dirname(file_path), 'Graphics'), 'Titles')
-      for _, _, files in os.walk(bgi_dir):
-        f_d = {}
-        for f in files:
-          n, e = os.path.splitext(f)
-          if e in GameSettingsFrame.DIS_EXTS:
-            f_d[n.lower()] = f
-        title_f, splash_f = None, None
-        for i in set(f_d.keys()):
-          if not title_f and i.startswith('title'):
-            title_f = i
-          if not splash_f and i.startswith('splash'):
-            splash_f = i
-
-        if title_f:
-          img_textbox.set_value(os.path.join(bgi_dir, f_d[title_f]))
-        elif splash_f:
-          img_textbox.set_value(os.path.join(bgi_dir, f_d[splash_f]))
-
+      text = os.path.basename(os.path.dirname(file_path))
+      name = text
     else:
-      game_label.config({"text": os.path.basename(file_path)[:32]})
+      text = os.path.basename(file_path)
+      name = os.path.splitext(text)[0]
+
+    game_label.config({"text": text[:32]})
+
+    if img_textbox:
+      GameSettingsFrame.auto_add_values(
+        textbox=img_textbox, exts=GameSettingsFrame.DIS_EXTS,
+        name=name, data_dir=os.path.join(
+          os.path.join(os.path.dirname(file_path), 'Graphics'), 'Titles'
+        )
+      )
+
+    if mus_textbox:
+      GameSettingsFrame.auto_add_values(
+        textbox=mus_textbox, exts=GameSettingsFrame.MUS_EXTS,
+        name=name, data_dir=os.path.join(
+          os.path.join(os.path.dirname(file_path), 'Audio'), 'BGM'
+        )
+      )
+
+  @staticmethod
+  def auto_add_values(textbox, exts, name, data_dir):
+    for _, _, files in os.walk(data_dir):
+      f_d = {}
+      for f in files:
+        n, e = os.path.splitext(f)
+        if e in exts:
+          f_d[n.lower()] = f
+
+      shelf_f, name_f, title_f, splash_f = None, None, None, None
+
+      for i in set(f_d.keys()):
+
+        if not shelf_f and i == 'shelf':
+          shelf_f = i
+
+        if not name_f and i == name:
+          name_f = i
+
+        if not title_f and i.startswith('title'):
+          title_f = i
+
+        if not splash_f and i.startswith('splash'):
+          splash_f = i
+
+      if shelf_f:
+        textbox.set_value(os.path.join(data_dir, f_d[shelf_f]))
+
+      elif name_f:
+        textbox.set_value(os.path.join(data_dir, f_d[shelf_f]))
+
+      elif title_f:
+        textbox.set_value(os.path.join(data_dir, f_d[title_f]))
+
+      elif splash_f:
+        textbox.set_value(os.path.join(data_dir, f_d[splash_f]))
+
 
   def create_game_settings(self, body_frame):
     game_exe = form_wids.InputFieldV2(
@@ -600,7 +618,7 @@ class GameSettingsFrame:
 
     game_music = form_wids.InputFieldV2(
       body_frame, heading="BG Music", value="", ft= [
-        ['Music', '.wav .ogg .flac'],
+        ['Music', ' '.join(self.MUS_EXTS)],
       ],
       font_=font.Font(family="Power Green",weight=font.BOLD, size=20)
     )
