@@ -1,11 +1,9 @@
-import subprocess, os
+import os, subprocess
+from functools import partial
 import tkinter as tk
 from tkinter import font
-from functools import partial
 
-from PIL import ImageTk, Image
-
-import res_wids, form_wids
+import form_wids, res_wids
 
 
 class AboutFrame:

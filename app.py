@@ -5,8 +5,7 @@ from functools import partial
 from PIL import Image
 from pystray import Icon as Tray, MenuItem as TrayCmd
 
-import frames, controllers
-from utils import load_unload_font
+import frames, utils
 from form_wids import DialogBox
 
 
@@ -39,7 +38,7 @@ class ShelfApp(tk.Tk):
     if self.asset_dir:
       for file in os.listdir(self.asset_dir):
         if file.endswith('.ttf'):
-          load_unload_font(
+          utils.load_unload_font(
             os.path.join(self.asset_dir, file), load=False
           )
 
@@ -166,7 +165,7 @@ class ShelfApp(tk.Tk):
       game_menu.add_command(label=data['lbl'], command=command)
 
       if command:
-        func = partial(self.controller.shortcut, menu=game_menu, lbl=data['lbl'], cmd=command)
+        func = partial(self._shortcut_event, menu=game_menu, lbl=data['lbl'], cmd=command)
         self.bind(f'<Control-{data["con"].lower()}>', func)
         self.bind(f'<Control-{data["con"].upper()}>', func)
 
@@ -174,13 +173,13 @@ class ShelfApp(tk.Tk):
 
     label, command = "⚙️ Options", partial(self.toggle_frame, "options")
     menu_bar.add_command(label=label, command=command)
-    self.bind(f'<Alt-s>', partial(self.controller.shortcut, menu=menu_bar, lbl=label, cmd=command))
-    self.bind(f'<Alt-S>', partial(self.controller.shortcut, menu=menu_bar, lbl=label, cmd=command))
+    self.bind(f'<Alt-s>', partial(self._shortcut_event, menu=menu_bar, lbl=label, cmd=command))
+    self.bind(f'<Alt-S>', partial(self._shortcut_event, menu=menu_bar, lbl=label, cmd=command))
 
     label, command = "💡 About", partial(self.toggle_frame, "about")
     menu_bar.add_command(label=label, command=command)
-    self.bind(f'<Alt-a>', partial(self.controller.shortcut, menu=menu_bar, lbl=label, cmd=command))
-    self.bind(f'<Alt-A>', partial(self.controller.shortcut, menu=menu_bar, lbl=label, cmd=command))
+    self.bind(f'<Alt-a>', partial(self._shortcut_event, menu=menu_bar, lbl=label, cmd=command))
+    self.bind(f'<Alt-A>', partial(self._shortcut_event, menu=menu_bar, lbl=label, cmd=command))
 
     self.config(menu=menu_bar)
 
@@ -223,7 +222,7 @@ class ShelfApp(tk.Tk):
 
     for file in os.listdir(self.asset_dir):
       if file.endswith('.ttf'):
-        load_unload_font(os.path.join(self.asset_dir, file))
+        utils.load_unload_font(os.path.join(self.asset_dir, file))
 
   def create_frame(self, name, pack_method=None):
     frame = tk.Frame(
@@ -272,7 +271,7 @@ class ShelfApp(tk.Tk):
   def bind_keys(self):
 
     for i in ['Escape', 'X', 'x']:
-      self.bind(f"<{i}>", self.controller.escape)
+      self.bind(f"<{i}>", self._escape_event)
 
     controls = {
       "prv_op": ["Up", "Shift-Tab"], "nxt_op": ["Down", "Tab"],
@@ -282,7 +281,7 @@ class ShelfApp(tk.Tk):
 
     for func, keys in controls.items():
       for key in keys:
-        self.bind(f"<{key}>", partial(self.controller.run_func, func_name=func))
+        self.bind(f"<{key}>", partial(self._interaction_event, func_name=func))
 
   def start_tray(self):
     self.withdraw()
@@ -328,3 +327,27 @@ class ShelfApp(tk.Tk):
       self.toggle_frame('shelf')
     else:
       self.toggle_frame('splash')
+
+  def _escape_event(self, event):
+    if event.widget.dialog_box:
+      return
+
+    if event.widget.cur_fr == event.widget.children["splash"]:
+      event.widget.destroy()
+    else:
+      event.widget.toggle_frame("splash")
+
+  def _shortcut_event(self, event, menu, lbl, cmd):
+    if event.widget.dialog_box:
+      return
+
+    cmd() if menu.entrycget(lbl, 'state') == "normal" else None
+
+  def _interaction_event(self, event, func_name):
+
+    if event.widget.dialog_box:
+      return
+
+    if func_name:
+      func = getattr(event.widget.cur_fr, func_name, None)
+      func() if func else None

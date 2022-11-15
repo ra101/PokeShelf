@@ -4,7 +4,8 @@ from tkinter import font
 from tkinter.filedialog import askopenfilename as select_file
 from functools import partial
 
-import res_wids
+
+from res_wids import ResponsiveEntry, ResponsiveFrame, ResponsiveLabel
 
 class BaseFormWidget:
   OFF_COLOR = "#639"
@@ -19,21 +20,21 @@ class BaseFormWidget:
     master.grid_columnconfigure(1, weight=10)
     master.grid_columnconfigure(2, weight=1)
 
-    self.cursor = res_wids.ResponsiveLabel(
+    self.cursor = ResponsiveLabel(
       master, fg=master['bg'], bg=master['bg'],
       root=master.root, font=font.Font(size=20), text="‣"
     )
     self.cursor.select = partial(self.cursor_select, self.cursor)
     self.cursor.unselect = partial(self.cursor_unselect, self.cursor)
 
-    self.heading = res_wids.ResponsiveLabel(
+    self.heading = ResponsiveLabel(
       master, fg=self.OFF_COLOR, bg=master['bg'],
       root=master.root, font=font_, text=heading
     )
     self.heading.select = partial(self.heading_select, self.heading)
     self.heading.unselect = partial(self.heading_unselect, self.heading)
 
-    self.input_frame = res_wids.ResponsiveFrame(
+    self.input_frame = ResponsiveFrame(
       master, bg=master['bg'], root=master.root,
     )
     self.input_frame.grid_rowconfigure(0, weight=1)
@@ -73,14 +74,14 @@ class Slider(BaseFormWidget):
     self.input_frame.grid_columnconfigure(0, weight=1)
     self.input_frame.grid_columnconfigure(1, weight=0)
 
-    self.slider = res_wids.ResponsiveLabel(
+    self.slider = ResponsiveLabel(
       self.input_frame, fg=self.OFF_COLOR, bg=master['bg'], root=master.root,
       font=font.Font(size=10),
       text=(("─"*(value//5))+'█'+("─"*(20-(value//5))))
     )
     self.slider.value = 5 * (value//5)
 
-    self.counter = res_wids.ResponsiveLabel(
+    self.counter = ResponsiveLabel(
       self.input_frame, fg=self.FIX_COLOR, bg=master['bg'], root=master.root,
       font=font_,
       text=f'{"0"*(3-len(f"{value}"))}{value}%'
@@ -129,7 +130,7 @@ class RadioButton(BaseFormWidget):
     for key, command in radiology.items():
       fg = self.FIX_COLOR if key == value else self.OFF_COLOR
 
-      radio = res_wids.ResponsiveLabel(
+      radio = ResponsiveLabel(
         self.input_frame, fg=fg, bg=master['bg'],
         root=master.root, font=font_, text=key
       )
@@ -183,7 +184,7 @@ class RadioButtonV2(BaseFormWidget):
     for key in self.input_frame.value_olist:
       fg = self.FIX_COLOR if key == value else self.OFF_COLOR
 
-      radio = res_wids.ResponsiveLabel(
+      radio = ResponsiveLabel(
         self.input_frame, fg=fg, bg=master['bg'],
         root=master.root, font=font_, text=key
       )
@@ -224,7 +225,7 @@ class InputField(BaseFormWidget):
 
     self.input_frame.grid_columnconfigure(0, weight=1)
 
-    self.textbox = res_wids.ResponsiveEntry(
+    self.textbox = ResponsiveEntry(
       self.input_frame, font=font_, root=master.root, width=22
     )
     self.textbox.set_value(value)
@@ -243,11 +244,11 @@ class InputFieldV2(InputField):
     self.input_frame.grid_columnconfigure(1, weight=1)
     self.textbox.configure({'width': 15})
 
-    self.browse_frame = res_wids.ResponsiveFrame(
+    self.browse_frame = ResponsiveFrame(
       self.input_frame, bg=master['bg'], root=master.root,
       highlightbackground=self.OFF_COLOR, highlightcolor=self.OFF_COLOR, highlightthickness=3
     )
-    self.browse_label = res_wids.ResponsiveLabel(
+    self.browse_label = ResponsiveLabel(
       self.browse_frame, font=font.Font(size=15), root=master.root,
       bg=master['bg'], text=" ... ", fg=self.ON_COLOR
     )
@@ -290,11 +291,11 @@ class DialogBox:
     if root.dialog_box:
       return
 
-    root.dialog_box = res_wids.ResponsiveFrame(
+    root.dialog_box = ResponsiveFrame(
       root.cur_fr, bg="#ddd", root=root, highlightbackground="#333",
       highlightcolor="#333", highlightthickness=3
     )
-    root.dialog_box.label = res_wids.ResponsiveLabel(
+    root.dialog_box.label = ResponsiveLabel(
       root.dialog_box, root=root, bg=root.dialog_box['bg'],
       text=text, fg=BaseFormWidget.FIX_COLOR,
       font=font.Font(family="Power Green",weight=font.BOLD, size=15)
