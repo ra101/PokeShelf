@@ -9,7 +9,7 @@
   </h1>
     
 <h1 id="-----">
-<a href="https://github.com/ra101/PokeShelf" target="_blank"><img src="https://img.shields.io/badge/Source_code-Github-202020?style=for-the-badge&logo=github" alt="source_code"></a> <a href="https://github.com/ra101/AR-Card/releases/download/v1.0.0/PokeShelf.zip"><img src="https://img.shields.io/badge/download-V1.0.0-default?style=for-the-badge&logo=windows" alt="download"></a>
+<a href="https://github.com/ra101/PokeShelf" target="_blank"><img src="https://img.shields.io/badge/Source_code-Github-202020?style=for-the-badge&logo=github" alt="source_code"></a> <a href="https://github.com/ra101/PokeShelf/releases/download/v1.0.0/PokeShelf.zip"><img src="https://img.shields.io/badge/download-V1.0.0-default?style=for-the-badge&logo=windows" alt="download"></a>
 
 </h1>
 
