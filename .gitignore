@@ -33,6 +33,11 @@ MANIFEST
 *.manifest
 *.spec
 
+# Ultimate Packer for eXecutables
+upx/
+..build/
+__main__.build/
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
