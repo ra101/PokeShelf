@@ -1,4 +1,5 @@
 @RD /S /Q .\Dist
+@RD /S /Q .\__pycache__
 
 pyinstaller -y -F -w --clean -i ./Assets/PokeShelf.ico^
  --collect-submodules tkinter.font --collect-submodules tkinter.filedialog^
@@ -10,8 +11,8 @@ pyinstaller -y -F -w --clean -i ./Assets/PokeShelf.ico^
  --collect-submodules pystray^
  --add-data __init__.py;. --add-data app.py;. --add-data utils.py;.^
  --add-data form_wids.py;. --add-data frames.py;. --add-data res_wids.py;.^
- --upx-dir ./upx/ --workpath .\Build --distpath .\Dist\PokeShelf --add-data LICENSE;.^
- -n PokeShelf __main__.py --key %SHELF_KEY%
+ --workpath .\Build --distpath .\Dist\PokeShelf --add-data LICENSE;.^
+ -n PokeShelf __main__.py
 
 python post_build.py
 
