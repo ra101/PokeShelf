@@ -130,7 +130,7 @@ class OptionsFrame:
 
   @staticmethod
   def run_op(frame):
-    if 1 < frame.selected_op < len(frame.op_frs):
+    if frame.selected_op not in [0, 1, 5]:
       frame.op_frs[frame.selected_op][-1].cmd()
 
 
