@@ -66,7 +66,7 @@ class AboutFrame:
     res_wids.ResponsiveLabel(
       win_frame, fg="#ddd", bg="black", root=self.root,
       font=font.Font(family="Power Green", size=15),
-      text="Version: v1.0.0  •  Licence: GPL 3.0\n\n",
+      text="Version: v1.2.4  •  Licence: GPL 3.0\n\n",
     ).grid(column=1, row=3, sticky=tk.N)
 
   def create_author(self, win_frame):
