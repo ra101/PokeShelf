@@ -81,8 +81,8 @@ class ShelfApp(tk.Tk):
 
   def init_music_server(self, MV=100):
     self.music_server = SfServer().boot()
-    self.music_server.setAmp(MV/100)
     self.music_server.start()
+    self.music_server.setAmp(MV/100)
 
     if not self.asset_dir:
       return
@@ -406,3 +406,10 @@ class ShelfApp(tk.Tk):
 
     for item in items_to_be_added:
       self.GO.append(item)
+
+  @classmethod
+  def _already_running_error(cls):
+    tk.Tk().withdraw()
+    tk.messagebox.showerror(
+      title='PokéShelf : Error', message="PokéShelf Already Running!"
+    )
