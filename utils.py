@@ -1,4 +1,8 @@
+import sys
+
+from psutil import process_iter
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
 
@@ -25,3 +29,18 @@ def load_unload_font(font_path, private=True, enumerable=False, load=True):
 
     flags = (FR_PRIVATE if private else 0) | (FR_NOT_ENUM if not enumerable else 0)
     return bool(FontResourceEx(byref(pathbuf), flags, 0))
+
+def is_already_running():
+
+    if not getattr(sys, 'frozen', False):
+        return False
+
+    singleton, sys_exe = False, sys.executable
+
+    for p in process_iter(attrs=['exe']):
+        if p.info['exe'] == sys_exe and p.parent().exe() != sys_exe:
+            if p.is_running() and singleton:
+                return True
+            singleton = True
+
+    return False

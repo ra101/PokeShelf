@@ -3,6 +3,7 @@
 
 pyinstaller -y -F -w --clean -i ./Assets/PokeShelf.ico^
  --collect-submodules tkinter.font --collect-submodules tkinter.filedialog^
+ --collect-submodules tkinter.messagebox --collect-submodules psutil.__init__^
  --collect-submodules ctypes.windll --collect-submodules json^
  --collect-submodules pyo.__init__ --collect-submodules pyo.server --collect-submodules pyo.players^
  --collect-submodules PIL.Image --collect-submodules PIL.ImageTk^

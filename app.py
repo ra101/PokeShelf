@@ -12,6 +12,11 @@ from form_wids import DialogBox
 
 class ShelfApp(tk.Tk):
 
+  def __new__(cls):
+    if utils.is_already_running():
+      return cls._already_running_error()
+    return super().__new__(cls)
+
   def __init__(
       self, screenName=None, baseName=None,
       className='Tk', useTk=True, sync=False, use=None
