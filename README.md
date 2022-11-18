@@ -1,18 +1,15 @@
 <div align="center">
 
-
   <h1 id="-----">
-
 
 <p align="center">
   <img src="./Assets/title.png" height="300px">
 </p>
 
   </h1>
-    
 
 <h1 id="-----">
-<a href="https://github.com/ra101/PokeShelf" target="_blank"><img src="https://img.shields.io/badge/Source%20code-404040?style=for-the-badge&logo=github" alt="source_code"></a> <a href="https://github.com/ra101/PokeShelf/releases/download/v1.0.0/PokeShelf.zip"><img src="https://img.shields.io/badge/download-639?style=for-the-badge&logo=windows" alt="download"></a> <a href="https://github.com/ra101/PokeShelf/releases/download/v1.0.0/PokeShelf.zip"><img src="https://img.shields.io/badge/sponser-dd6633?style=for-the-badge&logo=buymeacoffee&logoColor=white" alt="download"></a>
+<a href="https://github.com/ra101/PokeShelf" target="_blank"><img src="https://img.shields.io/badge/Source%20code-404040?style=for-the-badge&logo=github" alt="source_code"></a> <a href="https://github.com/ra101/PokeShelf/releases/latest/download/PokeShelf.zip"><img src="https://img.shields.io/badge/download-639?style=for-the-badge&logo=windows" alt="download"></a> <a href="https://github.com/ra101/PokeShelf/releases/download/v1.2.4/PokeShelf.zip"><img src="https://img.shields.io/badge/sponser-dd6633?style=for-the-badge&logo=buymeacoffee&logoColor=white" alt="download"></a>
 
 
 </h1>
@@ -28,23 +25,23 @@
 There various methods to make a Pokémon fangames. The most notable ones are:
 
 - Using [Pokémon Essentials](https://pokemon-fan-game.fandom.com/wiki/Pok%C3%A9mon_Essentials), A base [RPG Maker XP](https://www.rpgmakerweb.com/products/rpg-maker-xp) project that comes with its own debugger, map connector and alot of free tools, It is community driven project, and is always up-to-date! RPG-Maker-XP only compiles games to Windows, so these are essentially Windows only games!
-- By [ROM Hacking](https://en.wikipedia.org/wiki/ROM_hacking), These are created by editing the base ROM of *legally owned* Pokémon game, We will be taking only [GameBoy Series](https://en.wikipedia.org/wiki/Game_Boy_Advance) and [Nintendo DS](https://en.wikipedia.org/wiki/Nintendo_DS) in account, since they have the most used games as base Image. These Fangames are made for their respective console, but can be played on any device using [Emulator](https://en.wikipedia.org/wiki/Emulator)!
+- By [ROM Hacking](https://en.wikipedia.org/wiki/ROM_hacking), These are created by editing the base ROM of _legally owned_ Pokémon game, We will be taking only [GameBoy Series](https://en.wikipedia.org/wiki/Game_Boy_Advance) and [Nintendo DS](https://en.wikipedia.org/wiki/Nintendo_DS) in account, since they have the most used games as base Image. These Fangames are made for their respective console, but can be played on any device using [Emulator](https://en.wikipedia.org/wiki/Emulator)!
 
 <br/>
 
 ## 💼 About
 
 <p align="center">
-<i><b>"</b>Those who play Pokémon Games, typical have alot of them<b>"</b></i>  ~ My Experience
+<i><b>"</b>Those who play Pokémon Games, typically have alot of them<b>"</b></i>  ~ My Experience
 </p>
 
-**PokéShelf** is a living gallery that hosts all games downloaded/installed by the User, May it be *RPG-Maker* game or GBx/NDS ROM!
+**PokéShelf** is a living gallery that hosts all games downloaded/installed by the User, May it be _Essentials_ game or GBx/NDS ROM!
 
-- PokéShelf itself is themed like a Pokémon game, with almost no mouse input, to maintain the Immersion. 
+- PokéShelf itself is themed like a Pokémon game, with almost no mouse input, to maintain the Immersion.
 - Once Configured, Play Games Directly from PokeShelf, even the ones requiring Emulator!
-- You can Add Custom Background Image/Video, Custom Music for each fangame.
-- Auto Add functionality for BG and Music for most of the *RPG-Maker* Games, To enable this functionality with ROMs or with your *RPG-Maker* Game, Check this [Guide](#-auto-add-functionality ). 
-- Lastly, A Quit-to-Tray Option, if required, *I personally never used It.*
+- You can Add Custom Background Image/Video and Custom Music for each fangame.
+- Auto Add functionality for BG and Music for most of the _Essentials_ Games, To enable this functionality with ROMs or with your incompatible _Essentials_ Game, Check the [Auto-Add Guide](#-auto-add-functionality).
+- Lastly, A Quit-to-Tray Option, if required, _I personally never used It._
 
 <br/>
 
@@ -54,10 +51,7 @@ There various methods to make a Pokémon fangames. The most notable ones are:
 
 <br/>
 
-
-<div align="center"> 
-
+<div align="center">
 
   <h3> Made with <b>❤️</b> by<b>〈 RA 〉</b></h3>
-
 </div>
