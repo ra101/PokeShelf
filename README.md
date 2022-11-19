@@ -69,6 +69,7 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 **( I )**  Open **Options** by Press `Alt + S` *(S as in Settings)* or Click on `Options` in Menu Bar.
 
 <table align="center"><tr><th  align="center"><h3><code>Alt + S</code></h3></th><th><div align="center"><img src="./Assets/AS.gif"  width="200px" /></div></th></tr></table>
+
 - Adjust Music Volume
 
   <div align="center"><img src="./Assets/MV.gif" width=75% /></div>
