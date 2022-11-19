@@ -66,38 +66,70 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 <br/>
 <br/>
 
-
 **( I )**  Open **Options** by Press `Alt + S` *(S as in Settings)* or Click on `Options` in Menu Bar.
 
+<table><tr><th  align="center"><h3><code>Alt + S</code></h3></th><th><div align="center"><img src="./Assets/AS.gif"  width=200px/></div></th></tr></table>
 - Adjust Music Volume
+
+  <div align="center"><img src="./Assets/MV.gif" width=75% /></div>
+
 - Adjust Screen Size, >= L recommended
+
+  <div align="center"><img src="./Assets/SS.jpg" width=75% /></div>
+
 - You can't update Game Order within Shelf, Edit it in `config.json`.
+
+  <div align="center"><img src="./Assets/GO.jpg" width=75% /></div>
+
 - Add GBx Emulator if you intend to add GameBoy ROMs, [VisualBoy Advance](https://visualboyadvance.org/) is tested and recommended, It can emulate all GameBoy Series consoles (`.gb`, `.gbc`, `.gba`)
+
+  <div align="center"><img src="./Assets/GB.jpg" width=75% /></div>
+
 - Add NDS Emulator if you intend to add Nintendo DS ROMs, [DeSmuME](https://desmume.org) is tested and recommended.
+
+  <div align="center"><img src="./Assets/DS.jpg" width=75% /></div>
+
 - Activate Quit-to-Tray Option, if required
+
+  <div align="center"><img src="./Assets/ST.gif" width=75% /></div>
+
 - `Save` to remember this for next time, `Cancel` to revert back or Press `Esc` to simply use these settings as a one time thing.
+
+  <div align="center"><img src="./Assets/SC.gif" width=75% /></div>
 
 <br/><br/>
 
-
 **( II )**  Open **Add Game** by Press `Ctrl + A` *(A as in Add)* or Click on `Game > Add Game` in Menu Bar.
+
+<table><tr><th  align="center"><h3><code>Ctrl + A</code></h3></th><th><div align="center"><img src="./Assets/CA.gif" width=200px/></div></th></tr></table>
 
 - Add Essentials Game (`.exe`) **or** GBx ROM (`.gb`, `.gbc`, `.gba`)  **or** NDS ROM (`.nds`). *(While Adding ROMs make sure to have already added respective Emulator or else Save Button won't work)*
 -  As soon as you add Game, Auto Add functionality would kick in for `BG Image/Video` and `BG Music`, But incase it doesn't, You have ability to Manualy Select Both of Them
    - File type for `BG Image/Video`: `.png`, `.jpg`, `.jpeg`, `.bmp`, `.gif`, `.mp4`, `.mkv`, `.webm`, `.avi`, `.mov`
    - File type for `BG Music`: `.wav`, `.ogg`, `.flac` (unfortunately `.mid` is not yet supported)
    - If it doesn't kick in, To enable this functionality with ROMs or with your incompatible _Essentials_ Game, Check the [Auto-Add Guide](#-auto-add-functionality), and go to edit menu and readd the game.
+   
+   <div align="center"><img src="./Assets/AG.jpg" width=75% /></div>
+   
 - Press `Save`, It will send into the `Shelf` Screen, with your game displayed on front, `Cancel` will send you back to `Spash` Screen.
+
+  <div align="center"><img src="./Assets/SC.gif" width=75% /></div>
 
 <br/><br/>
 
 
 
-**( III )**  Once A Game is Added, You can go to **Shelf** Screen by `Ctrl + S` *(A as in Shelf)* or Click on `Game > PokeShelf` in Menu Bar.
+**( III )**  Once A Game is Added, You can go to **Shelf** Screen by `Ctrl + S` *(S as in Shelf)* or Click on `Game > PokeShelf` in Menu Bar.
+
+<table><tr><th  align="center"><h3><code>Ctrl + S</code></h3></th><th><div align="center"><img src="./Assets/CS.gif" width=200px/></div></th></tr></table>
 
 - You can use `<Left>`-`<Right>` to navigate b/w Games; Press `<Enter>` to Exit Shelf and **Start** the selected Game!
 - To **Remove Game**, Simpily naviagte to the game you want to remove and Press `Ctrl + R` *(R as in Remove)* or Click on `Game > Remove Game` in Menu Bar.
+
+  <table><tr><th  align="center"><h3><code>Ctrl + R</code></h3></th><th><div align="center"><img src="./Assets/CR.gif" width=200px/></div></th></tr></table>
 - To **Edit Game**, Simpily naviagte to the game you want to edit and Press `Ctrl + E` *(E as in Edit)* or Click on `Game > Edit Game` in Menu Bar.
+
+  <table><tr><th  align="center"><h3><code>Ctrl + E</code></h3></th><th><div align="center"><img src="./Assets/CE.gif" width=200px/></div></th></tr></table>
 
 <br/><br/>
 
@@ -105,11 +137,12 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 
 **( IV )**  To get Details about the app, Press `Alt + A` *(A as in About)* or Click on `About` in Menu Bar.
 
+<table><tr><th  align="center"><h3><code>Alt + A</code></h3></th><th><div align="center"><img src="./Assets/AA.gif" width=200px/></div></th></tr></table>
 <br/><br/>
 
 
 
-<br/>
+<br/> 
 
 ## 🤙Contact Me
 
