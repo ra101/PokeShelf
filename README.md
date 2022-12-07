@@ -40,12 +40,12 @@ There various methods to make a Pokémon fangames. The most notable ones are:
 - PokéShelf itself is themed like a Pokémon game menu, with almost no mouse input and key bindings similar to _Emulators_ and _Essentials_ game, all this to maintain the Immersion.
 - Once Configured, Play Games Directly from PokeShelf, even the ones that require Emulator!
 - You can Add Custom Background Image/Video and Custom Music for each fangame.
-- Auto Add functionality for BG and Music for most of the _Essentials_ Games, To enable this functionality with ROMs or with your incompatible _Essentials_ Game, Check the [Auto-Add Guide](#-auto-add-functionality).
+- Auto Add functionality for BG and Music for most of the _Essentials_ Games, To enable this functionality with ROMs or with your incompatible _Essentials_ Game, Check the [BG Auto-Add Guide](#-how-bg-auto-add-works).
 - Lastly, A Quit-to-Tray Option, if required, _I personally never used It._
 
 <br/>
 
-## 💥Get Started
+## 💥 Get Started
 
 
 
@@ -69,7 +69,6 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 **( I )**  Open **Options** by Press `Alt + S` *(S as in Settings)* or Click on `Options` in Menu Bar.
 
 <table align="center"><tr><th  align="center"><h3><code>Alt + S</code></h3></th><th><div align="center"><img src="./Assets/AS.gif"  width="200px" /></div></th></tr></table>
-
 - Adjust Music Volume
 
   <div align="center"><img src="./Assets/MV.gif" width=75% /></div>
@@ -103,12 +102,11 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 **( II )**  Open **Add Game** by Press `Ctrl + A` *(A as in Add)* or Click on `Game > Add Game` in Menu Bar.
 
 <table align="center"><tr><th  align="center"><h3><code>Ctrl + A</code></h3></th><th><div align="center"><img src="./Assets/CA.gif" width="200px" /></div></th></tr></table>
-
 - Add Essentials Game (`.exe`) **or** GBx ROM (`.gb`, `.gbc`, `.gba`)  **or** NDS ROM (`.nds`). *(While Adding ROMs make sure to have already added respective Emulator or else Save Button won't work)*
--  As soon as you add Game, Auto Add functionality would kick in for `BG Image/Video` and `BG Music`, But incase it doesn't, You have ability to Manualy Select Both of Them
+-  As soon as you add Game, [Auto Add]((#-how-bg-auto-add-works)) functionality would kick in for `BG Image/Video` and `BG Music`, But incase it doesn't, You have ability to Manualy Select Both of Them
    - File type for `BG Image/Video`: `.png`, `.jpg`, `.jpeg`, `.bmp`, `.gif`, `.mp4`, `.mkv`, `.webm`, `.avi`, `.mov`
    - File type for `BG Music`: `.wav`, `.ogg`, `.flac` (unfortunately `.mid` is not yet supported)
-   - If it doesn't kick in, To enable this functionality with ROMs or with your incompatible _Essentials_ Game, Check the [Auto-Add Guide](#-auto-add-functionality), and go to edit menu and readd the game.
+   - If it doesn't kick in, To enable this functionality with ROMs or with your incompatible _Essentials_ Game, Check the [BG Auto-Add Guide](#-how-bg-auto-add-works), and go to edit menu and readd the game.
    
    <div align="center"><img src="./Assets/AG.jpg" width=75% /></div>
    
@@ -123,7 +121,6 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 **( III )**  Once A Game is Added, You can go to **Shelf** Screen by `Ctrl + S` *(S as in Shelf)* or Click on `Game > PokeShelf` in Menu Bar.
 
 <table align="center"><tr><th  align="center"><h3><code>Ctrl + S</code></h3></th><th><div align="center"><img src="./Assets/CS.gif" width="200px" /></div></th></tr></table>
-
 - You can use `<Left>`-`<Right>` to navigate b/w Games; Press `<Enter>` to Exit Shelf and **Start** the selected Game!
 - To **Remove Game**, Simpily naviagte to the game you want to remove and Press `Ctrl + R` *(R as in Remove)* or Click on `Game > Remove Game` in Menu Bar.
 
@@ -141,9 +138,43 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 <table align="center"><tr><th  align="center"><h3><code>Alt + A</code></h3></th><th><div align="center"><img src="./Assets/AA.gif" width="200px" /></div></th></tr></table>
 <br/><br/>
 
+## 📜 How BG Auto-Add Works!
+
+Background files are added automacially for Essentials Games, This is see how a typical Essentials Game Folder Structure Looks:
+
+<table align="center"><tr><td width="50%">So, Shelf automatically looks for <ul><li><code>BG Img/Vid</code> in <code>./Graphics/Titles/</code></li><li><code>BG Music</code> in <code>./Audio/BGM/</code></li></ul></td><td><div align="left"><img src="./Assets/exe_struc.png" width="75%" /></div></td></tr></table>
+
+### Priority List for File Name: 
+
+*Lower the Rank, Higher the Priority*
+
+1. **`Shelf`**: for example, `shelf.gif` , `SHelf.mp4`, `ShElf.ogg`
+
+2. **`GameName`** : 
+   - **Folder Name** for an **Essentials Game**, e.g.:`eSsEnstiAls gAme.png`, `Pokemon Uranium.wav` 
+   -  ROM **File Name** for **ROM**, e.g.: `radical-red-v2.3a.jpg`, `unbound-v1.1.3.1.ogg `
+   
+3. **`Title`** : First file with name starting with **title**, e.g.: `title1.mkv`, `TitLe-random.flac`
+
+4. **`Splash`** : First file with name starting with **splash**, e.g.: `splash151.mkv`, `splash-splish.ogg`
+
+   
+
+**To Make your Essentials Game PokéShelf Compactible, Developers are Recommended to use `Shelf`**
 
 
-<br/> 
+
+### Recommended Folder Structure for ROMs: 
+
+<table align="center"><tr><td width="50%">Since Shelf is already checking for files in <code>./Graphics/Titles/</code> and <code>./Audio/BGM/</code>, We can create those folders and just add files there, (for each of the roms) <br /><br /><code>Shelf</code>, <code>Title</code> and <code>Spalsh</code> will display the same Image for all the ROMs, therefore <b><code>GameName</code></b> is the only one applicable when you have more than one ROM.</td><td><div align="left"><img src="./Assets/rom_struc.png" width="75%" /></div></td></tr></table>
+
+
+
+**To Make your Fan ROM PokéShelf Compactible, Developers are Recommended to use `GameName`**
+
+<br/>
+
+<br/>
 
 ## 🤙Contact Me
 

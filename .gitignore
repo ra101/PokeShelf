@@ -135,3 +135,7 @@ dmypy.json
 
 # Config File
 config.json
+
+# Other Stuff
+Emulators/
+Games/
