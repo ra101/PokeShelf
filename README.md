@@ -69,6 +69,7 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 **( I )**  Open **Options** by Press `Alt + S` *(S as in Settings)* or Click on `Options` in Menu Bar.
 
 <table align="center"><tr><th  align="center"><h3><code>Alt + S</code></h3></th><th><div align="center"><img src="./Assets/AS.gif"  width="200px" /></div></th></tr></table>
+
 - Adjust Music Volume
 
   <div align="center"><img src="./Assets/MV.gif" width=75% /></div>
@@ -102,6 +103,7 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 **( II )**  Open **Add Game** by Press `Ctrl + A` *(A as in Add)* or Click on `Game > Add Game` in Menu Bar.
 
 <table align="center"><tr><th  align="center"><h3><code>Ctrl + A</code></h3></th><th><div align="center"><img src="./Assets/CA.gif" width="200px" /></div></th></tr></table>
+
 - Add Essentials Game (`.exe`) **or** GBx ROM (`.gb`, `.gbc`, `.gba`)  **or** NDS ROM (`.nds`). *(While Adding ROMs make sure to have already added respective Emulator or else Save Button won't work)*
 -  As soon as you add Game, [Auto Add]((#-how-bg-auto-add-works)) functionality would kick in for `BG Image/Video` and `BG Music`, But incase it doesn't, You have ability to Manualy Select Both of Them
    - File type for `BG Image/Video`: `.png`, `.jpg`, `.jpeg`, `.bmp`, `.gif`, `.mp4`, `.mkv`, `.webm`, `.avi`, `.mov`
@@ -121,6 +123,7 @@ You are First Encountered with the **Splash** Screen, Add a game in order to get
 **( III )**  Once A Game is Added, You can go to **Shelf** Screen by `Ctrl + S` *(S as in Shelf)* or Click on `Game > PokeShelf` in Menu Bar.
 
 <table align="center"><tr><th  align="center"><h3><code>Ctrl + S</code></h3></th><th><div align="center"><img src="./Assets/CS.gif" width="200px" /></div></th></tr></table>
+
 - You can use `<Left>`-`<Right>` to navigate b/w Games; Press `<Enter>` to Exit Shelf and **Start** the selected Game!
 - To **Remove Game**, Simpily naviagte to the game you want to remove and Press `Ctrl + R` *(R as in Remove)* or Click on `Game > Remove Game` in Menu Bar.
 
@@ -144,6 +147,8 @@ Background files are added automacially for Essentials Games, This is see how a 
 
 <table align="center"><tr><td width="50%">So, Shelf automatically looks for <ul><li><code>BG Img/Vid</code> in <code>./Graphics/Titles/</code></li><li><code>BG Music</code> in <code>./Audio/BGM/</code></li></ul></td><td><div align="left"><img src="./Assets/exe_struc.png" width="75%" /></div></td></tr></table>
 
+<br/>
+
 ### Priority List for File Name: 
 
 *Lower the Rank, Higher the Priority*
@@ -158,17 +163,19 @@ Background files are added automacially for Essentials Games, This is see how a 
 
 4. **`Splash`** : First file with name starting with **splash**, e.g.: `splash151.mkv`, `splash-splish.ogg`
 
-   
+   <br/>
 
 **To Make your Essentials Game PokéShelf Compactible, Developers are Recommended to use `Shelf`**
 
 
+<br/>
 
 ### Recommended Folder Structure for ROMs: 
 
 <table align="center"><tr><td width="50%">Since Shelf is already checking for files in <code>./Graphics/Titles/</code> and <code>./Audio/BGM/</code>, We can create those folders and just add files there, (for each of the roms) <br /><br /><code>Shelf</code>, <code>Title</code> and <code>Spalsh</code> will display the same Image for all the ROMs, therefore <b><code>GameName</code></b> is the only one applicable when you have more than one ROM.</td><td><div align="left"><img src="./Assets/rom_struc.png" width="75%" /></div></td></tr></table>
 
 
+<br/>
 
 **To Make your Fan ROM PokéShelf Compactible, Developers are Recommended to use `GameName`**
 
